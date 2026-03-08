@@ -63,7 +63,13 @@ export default function ProfesoresClient({ teachers: initialTeachers, subjects, 
   }
 
   const handleDelete = async (id) => {
-    await fetch(`/api/teachers/${id}`, { method: 'DELETE' })
+    const res = await fetch(`/api/teachers/${id}`, { method: 'DELETE' })
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}))
+      alert(err.error || 'Error al eliminar el docente')
+      setConfirmDelete(null)
+      return
+    }
     setTeachers(prev => prev.filter(t => t.id !== id))
     setConfirmDelete(null)
     startTransition(() => router.refresh())
@@ -224,7 +230,7 @@ export default function ProfesoresClient({ teachers: initialTeachers, subjects, 
                         <div className={`flex items-center justify-center gap-1 text-sm font-medium font-tabular ${isOverloaded ? 'text-error font-bold' : 'text-white/70'}`}>
                           <span>{teacher.assigned_hours} h</span>
                           {isOverloaded && (
-                            <span className="material-symbols-outlined text-[16px]" title="Excede carga máxima">warning</span>
+                            <span className="material-symbols-outlined text-[16px]" aria-hidden="true">warning</span>
                           )}
                         </div>
                       </td>
@@ -246,16 +252,16 @@ export default function ProfesoresClient({ teachers: initialTeachers, subjects, 
                           <button
                             onClick={() => setModal(teacher)}
                             className="p-1.5 text-white/50 hover:text-white hover:bg-white/10 rounded transition-all"
-                            title="Editar"
+                            aria-label={`Editar a ${teacher.name}`}
                           >
-                            <span className="material-symbols-outlined text-[18px]">edit</span>
+                            <span className="material-symbols-outlined text-[18px]" aria-hidden="true">edit</span>
                           </button>
                           <button
                             onClick={() => setConfirmDelete(teacher)}
                             className="p-1.5 text-white/50 hover:text-error hover:bg-error/10 rounded transition-all"
-                            title="Eliminar"
+                            aria-label={`Eliminar a ${teacher.name}`}
                           >
-                            <span className="material-symbols-outlined text-[18px]">delete</span>
+                            <span className="material-symbols-outlined text-[18px]" aria-hidden="true">delete</span>
                           </button>
                         </div>
                       </td>

@@ -21,7 +21,7 @@ export default function AppLayout({ children }) {
           {/* Branding */}
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-secondary rounded flex items-center justify-center text-primary font-serif font-bold text-xl">
+              <div aria-hidden="true" className="w-8 h-8 bg-secondary rounded flex items-center justify-center text-primary font-serif font-bold text-xl">
                 L
               </div>
               <div className="flex flex-col">
@@ -61,7 +61,7 @@ export default function AppLayout({ children }) {
               <span className="block font-bold text-white text-sm">Director Académico</span>
               <span className="block text-xs text-secondary">Admin</span>
             </div>
-            <div className="w-9 h-9 bg-secondary rounded-full flex items-center justify-center text-primary font-serif font-bold">
+            <div aria-hidden="true" className="w-9 h-9 bg-secondary rounded-full flex items-center justify-center text-primary font-serif font-bold">
               DA
             </div>
           </div>
@@ -69,7 +69,7 @@ export default function AppLayout({ children }) {
       </header>
 
       {/* Page Content */}
-      <main className="flex-1 w-full">
+      <main id="main-content" className="flex-1 w-full">
         {children}
       </main>
 
@@ -79,7 +79,7 @@ export default function AppLayout({ children }) {
           <p>© 2026 Colegio Lamatepec. Todos los derechos reservados.</p>
           <div className="flex items-center gap-6 mt-2 md:mt-0">
             <span className="flex items-center gap-1 text-success">
-              <span className="w-2 h-2 bg-success rounded-full inline-block"></span>
+              <span aria-hidden="true" className="w-2 h-2 bg-success rounded-full inline-block"></span>
               Sistema Operativo v1.0.0
             </span>
           </div>

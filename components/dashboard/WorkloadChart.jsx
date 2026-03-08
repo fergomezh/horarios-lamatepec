@@ -66,11 +66,11 @@ export default function WorkloadChart({ teachers }) {
             width={80}
           />
           <Tooltip content={<CustomTooltip />} />
-          <Bar dataKey="asignadas" stackId="a" fill="#1B2A4E" radius={[0, 0, 0, 0]}>
+          <Bar dataKey="asignadas" stackId="a" fill="var(--color-primary)" radius={[0, 0, 0, 0]}>
             {data.map((entry, index) => (
               <Cell
                 key={index}
-                fill={entry.pct >= 100 ? '#B91C1C' : entry.pct >= 80 ? '#C5A065' : '#1B2A4E'}
+                fill={entry.pct >= 100 ? 'var(--color-error)' : entry.pct >= 80 ? 'var(--color-secondary)' : 'var(--color-primary)'}
               />
             ))}
           </Bar>

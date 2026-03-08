@@ -51,8 +51,8 @@ export default function ScheduleCell({ id, assignment, slotId, day, isDragging, 
   if (isOver && isDragging) {
     // Hovering — show prominent indicator
     if (isBlocked) {
-      bg = '#FEE2E2'
-      border = '1px solid #B91C1C'
+      bg = 'var(--color-error-light)'
+      border = '1px solid var(--color-error)'
       content = (
         <div className="flex flex-col items-center justify-center h-full gap-0.5">
           <span className="material-symbols-outlined text-error text-[14px]" aria-hidden="true">block</span>
@@ -62,8 +62,8 @@ export default function ScheduleCell({ id, assignment, slotId, day, isDragging, 
         </div>
       )
     } else {
-      bg = '#DCFCE7'
-      border = '1px solid #15803D'
+      bg = 'var(--color-success-light)'
+      border = '1px solid var(--color-success)'
       content = (
         <div className="flex flex-col items-center justify-center h-full gap-0.5">
           <span className="material-symbols-outlined text-success text-[14px]" aria-hidden="true">add_circle</span>
@@ -74,12 +74,12 @@ export default function ScheduleCell({ id, assignment, slotId, day, isDragging, 
   } else if (isDragging) {
     // Not hovering but dragging — color all cells
     if (isBlocked) {
-      bg = '#FEE2E2'
-      border = '1px solid #FCA5A5'
+      bg = 'var(--color-error-light)'
+      border = '1px solid var(--color-conflict)'
       content = null
     } else {
-      bg = '#F0FDF4'
-      border = '1px solid #86EFAC'
+      bg = 'var(--color-success-light)'
+      border = '1px solid var(--color-success)'
       content = null
     }
   } else {

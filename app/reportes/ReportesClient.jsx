@@ -26,7 +26,15 @@ export default function ReportesClient({ teachers, subjects, sections, assignmen
 
     // Teachers in this section
     const teacherIds = [...new Set(secAssignments.map(a => a.teacher_id))]
-    const secTeachers = teachers.filter(t => teacherIds.includes(t.id))
+    const secTeachers = teachers.filter(t => teacherIds.includes(t.id)).map(t => {
+      const teacherSubjectIds = [...new Set(
+        secAssignments.filter(a => a.teacher_id === t.id).map(a => a.subject_id)
+      )]
+      const teacherSubjectNames = teacherSubjectIds
+        .map(sid => subjects.find(s => s.id === sid)?.name)
+        .filter(Boolean)
+      return { ...t, section_subject_names: teacherSubjectNames }
+    })
 
     return {
       section: sec,
@@ -132,10 +140,6 @@ export default function ReportesClient({ teachers, subjects, sections, assignmen
               ) : (
                 <ul className="space-y-2">
                   {secTeachers.map(teacher => {
-                    const breakdown = subjectBreakdown.find(sb => {
-                      const a = teacher
-                      return sb.subject.id === a.subject_id
-                    })
                     return (
                       <li key={teacher.id} className="flex items-center gap-2">
                         <div
@@ -146,7 +150,11 @@ export default function ReportesClient({ teachers, subjects, sections, assignmen
                         </div>
                         <div className="min-w-0">
                           <p className="text-xs font-semibold text-white truncate">{teacher.name}</p>
-                          <p className="text-[10px] text-white/50 truncate">{teacher.subject_name}</p>
+                          <p className="text-[10px] text-white/50 truncate">
+                            {teacher.section_subject_names.length > 0
+                              ? teacher.section_subject_names.join(', ')
+                              : 'Sin materia'}
+                          </p>
                         </div>
                       </li>
                     )

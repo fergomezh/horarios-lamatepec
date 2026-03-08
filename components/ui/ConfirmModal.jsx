@@ -31,7 +31,12 @@ export default function ConfirmModal({
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
       onClick={(e) => { if (e.target === e.currentTarget) onCancel() }}
     >
-      <div className="bg-white rounded shadow-floating w-full max-w-sm overflow-hidden animate-[slideUp_0.2s_ease-out]">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="confirm-modal-title"
+        className="bg-white rounded shadow-floating w-full max-w-sm overflow-hidden animate-[slideUp_0.2s_ease-out] overscroll-contain"
+      >
         {/* Top accent bar */}
         <div className={`h-1 w-full ${variant === 'danger' ? 'bg-error' : 'bg-secondary'}`} />
 
@@ -44,7 +49,7 @@ export default function ConfirmModal({
               </span>
             </div>
             <div>
-              <h3 className="font-serif font-bold text-primary text-lg leading-tight">{title}</h3>
+              <h3 id="confirm-modal-title" className="font-serif font-bold text-primary text-lg leading-tight">{title}</h3>
               {message && (
                 <p className="text-sm text-text-muted mt-1 leading-relaxed">{message}</p>
               )}

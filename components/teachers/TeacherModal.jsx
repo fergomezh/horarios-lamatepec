@@ -77,29 +77,31 @@ export default function TeacherModal({ teacher, subjects, onSave, onClose }) {
           )}
 
           <div>
-            <label className="block text-[11px] uppercase tracking-wider font-bold text-text-muted mb-1">
+            <label htmlFor="teacher-name" className="block text-[11px] uppercase tracking-wider font-bold text-text-muted mb-1">
               Nombre completo *
             </label>
             <input
+              id="teacher-name"
               required
               type="text"
               value={form.name}
               onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-              className="institutional-input w-full px-3 py-2 text-sm border border-border-std rounded text-text-main focus:ring-0"
+              className="institutional-input w-full px-3 py-2 text-sm border border-border-std rounded text-text-main"
               autoComplete="name"
               placeholder="Ej: Saúl Molina…"
             />
           </div>
 
           <div>
-            <label className="block text-[11px] uppercase tracking-wider font-bold text-text-muted mb-1">
+            <label htmlFor="teacher-email" className="block text-[11px] uppercase tracking-wider font-bold text-text-muted mb-1">
               Correo electrónico
             </label>
             <input
+              id="teacher-email"
               type="email"
               value={form.email}
               onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-              className="institutional-input w-full px-3 py-2 text-sm border border-border-std rounded text-text-main focus:ring-0"
+              className="institutional-input w-full px-3 py-2 text-sm border border-border-std rounded text-text-main"
               autoComplete="email"
               spellCheck={false}
               placeholder="profesor@lamatepec.edu.sv…"
@@ -108,14 +110,14 @@ export default function TeacherModal({ teacher, subjects, onSave, onClose }) {
 
           {/* Multi-subject selector */}
           <div>
-            <label className="block text-[11px] uppercase tracking-wider font-bold text-text-muted mb-2">
+            <p className="block text-[11px] uppercase tracking-wider font-bold text-text-muted mb-2">
               Materias que imparte
               {form.subject_ids.length > 0 && (
                 <span className="ml-2 text-primary normal-case tracking-normal font-normal">
                   ({form.subject_ids.length} seleccionada{form.subject_ids.length > 1 ? 's' : ''})
                 </span>
               )}
-            </label>
+            </p>
             <div className="grid grid-cols-2 gap-1.5 max-h-40 overflow-y-auto pr-1">
               {subjects.map(s => {
                 const selected = form.subject_ids.includes(s.id)
@@ -145,17 +147,18 @@ export default function TeacherModal({ teacher, subjects, onSave, onClose }) {
           </div>
 
           <div>
-            <label className="block text-[11px] uppercase tracking-wider font-bold text-text-muted mb-1">
+            <label htmlFor="teacher-maxhours" className="block text-[11px] uppercase tracking-wider font-bold text-text-muted mb-1">
               Carga máxima semanal (horas)
             </label>
             <input
+              id="teacher-maxhours"
               type="number"
               min="1"
               max="40"
               inputMode="numeric"
               value={form.max_hours}
               onChange={e => setForm(f => ({ ...f, max_hours: parseInt(e.target.value) }))}
-              className="institutional-input w-full px-3 py-2 text-sm border border-border-std rounded text-text-main focus:ring-0"
+              className="institutional-input w-full px-3 py-2 text-sm border border-border-std rounded text-text-main"
             />
           </div>
 

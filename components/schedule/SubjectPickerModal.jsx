@@ -1,24 +1,31 @@
 'use client'
-
-const DAYS_ES = {
-  Lunes: 'Lunes', Martes: 'Martes', Miércoles: 'Miércoles',
-  Jueves: 'Jueves', Viernes: 'Viernes',
-}
+import { useEffect } from 'react'
 
 export default function SubjectPickerModal({ teacher, slotId, day, slots, onConfirm, onCancel }) {
   const slot = slots?.find(s => s.id === slotId)
   const subjects = teacher?.subjects || []
 
+  useEffect(() => {
+    const handler = (e) => { if (e.key === 'Escape') onCancel() }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [onCancel])
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" style={{ overscrollBehavior: 'contain' }}>
-      <div className="bg-white rounded shadow-floating w-full max-w-sm mx-4 overflow-hidden">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="subject-picker-title"
+        className="bg-white rounded shadow-floating w-full max-w-sm mx-4 overflow-hidden overscroll-contain"
+      >
         {/* Header */}
         <div className="bg-primary px-5 py-4 flex items-start justify-between">
           <div>
             <p className="text-secondary text-[10px] uppercase tracking-widest font-bold mb-1">
               Asignar clase
             </p>
-            <h3 className="text-white font-serif font-bold text-lg leading-tight">
+            <h3 id="subject-picker-title" className="text-white font-serif font-bold text-lg leading-tight">
               {teacher?.name}
             </h3>
             <p className="text-white/60 text-xs mt-0.5">

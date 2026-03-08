@@ -41,7 +41,7 @@ export default function TeacherCard({ teacher, isDragging = false }) {
       <div className="flex-1 min-w-0">
         <div className="flex justify-between items-start">
           <p className="text-sm font-bold text-text-main truncate">{teacher.name}</p>
-          <span className="material-symbols-outlined text-text-muted text-[16px] opacity-0 group-hover:opacity-100 cursor-grab">
+          <span className="material-symbols-outlined text-text-muted text-[16px] opacity-0 group-hover:opacity-100 cursor-grab" aria-hidden="true">
             drag_indicator
           </span>
         </div>

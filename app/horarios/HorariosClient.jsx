@@ -181,7 +181,10 @@ export default function HorariosClient({ teachers, subjects, sections, slots, sc
             e inicializar la base de datos.
           </p>
           <button
-            onClick={async () => { await fetch('/api/seed', { method: 'POST' }); router.refresh() }}
+            onClick={async () => {
+              await fetch('/api/seed', { method: 'POST' })
+              router.refresh()
+            }}
             className="px-4 py-2 bg-secondary text-primary text-sm font-bold rounded hover:bg-secondary-light"
           >
             Inicializar Base de Datos
@@ -467,7 +470,7 @@ export default function HorariosClient({ teachers, subjects, sections, slots, sc
         <div className={`fixed bottom-6 right-6 flex items-center gap-3 px-4 py-3 rounded shadow-floating z-50 toast-enter ${
           toast.isError ? 'bg-error text-white' : 'bg-secondary text-primary'
         }`}>
-          <span className="material-symbols-outlined">
+          <span className="material-symbols-outlined" aria-hidden="true">
             {toast.isError ? 'warning' : 'check_circle'}
           </span>
           <span className="text-sm font-medium">{toast.msg}</span>

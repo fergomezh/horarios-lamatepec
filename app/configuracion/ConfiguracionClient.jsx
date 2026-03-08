@@ -160,11 +160,22 @@ export default function ConfiguracionClient({ subjects: initialSubjects, gradeHo
 
   const handleUpdateWeeklyHours = async (subject, hours) => {
     setSubjects(prev => prev.map(s => s.id === subject.id ? { ...s, weekly_hours: hours } : s))
-    await fetch(`/api/subjects/${subject.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...subject, weekly_hours: hours }),
-    })
+    try {
+      const res = await fetch(`/api/subjects/${subject.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...subject, weekly_hours: hours }),
+      })
+      if (!res.ok) {
+        const err = await res.json()
+        showToast(err.error || 'Error al actualizar las horas', true)
+        // Revert optimistic update
+        setSubjects(prev => prev.map(s => s.id === subject.id ? subject : s))
+      }
+    } catch {
+      showToast('Error al actualizar las horas', true)
+      setSubjects(prev => prev.map(s => s.id === subject.id ? subject : s))
+    }
   }
 
 
@@ -238,6 +249,7 @@ export default function ConfiguracionClient({ subjects: initialSubjects, gradeHo
                             type="number"
                             min="0"
                             max="15"
+                            aria-label={`Horas semanales de ${subject.name} para ${grade}° grado`}
                             value={getHours(subject.id, grade)}
                             onChange={e => handleGradeHoursChange(subject.id, grade, Math.max(0, parseInt(e.target.value) || 0))}
                             className="w-14 text-center text-sm font-bold border border-white/20 rounded py-1 focus:ring-1 focus:ring-secondary focus:border-secondary bg-white/10 text-white"
@@ -424,7 +436,7 @@ export default function ConfiguracionClient({ subjects: initialSubjects, gradeHo
         <div className={`fixed bottom-6 right-6 flex items-center gap-3 px-4 py-3 rounded shadow-floating z-50 toast-enter ${
           toast.isError ? 'bg-error text-white' : 'bg-secondary text-primary'
         }`}>
-          <span className="material-symbols-outlined">
+          <span className="material-symbols-outlined" aria-hidden="true">
             {toast.isError ? 'warning' : 'check_circle'}
           </span>
           <span className="text-sm font-medium">{toast.msg}</span>
