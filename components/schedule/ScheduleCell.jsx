@@ -13,11 +13,11 @@ export default function ScheduleCell({ id, assignment, slotId, day, isDragging, 
       }`}>
         <div
           className="w-full h-full rounded p-1 flex flex-col justify-between bg-white shadow-card"
-          style={{ border: `1px solid ${color}` }}
+          style={{ border: `2px solid ${color}` }}
         >
           <div className="flex justify-between items-start gap-0.5">
             <span
-              className="text-[9px] font-extrabold uppercase tracking-wide leading-tight truncate"
+              className="text-[11px] font-extrabold uppercase tracking-wide leading-tight truncate"
               style={{ color }}
             >
               {assignment.subject_name}
@@ -33,7 +33,7 @@ export default function ScheduleCell({ id, assignment, slotId, day, isDragging, 
               </button>
             )}
           </div>
-          <p className="text-[8px] text-text-muted font-medium leading-tight truncate">
+          <p className="text-[10px] text-text-muted font-medium leading-tight truncate">
             {assignment.teacher_name}
           </p>
         </div>
