@@ -19,7 +19,7 @@ async function getData() {
         LEFT JOIN teacher_subjects ts ON ts.teacher_id = t.id
         LEFT JOIN subjects s ON s.id = ts.subject_id
         LEFT JOIN schedule_assignments sa ON sa.teacher_id = t.id
-          JOIN schedule_options so ON so.id = sa.option_id AND so.is_principal = true
+          LEFT JOIN schedule_options so ON so.id = sa.option_id AND so.is_principal = true
         GROUP BY t.id
         ORDER BY t.name
       `),

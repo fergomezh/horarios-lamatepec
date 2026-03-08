@@ -26,15 +26,19 @@ function CancelZone({ isDragging }) {
 
 export default function SidebarTeachers({ teachers, isDragging }) {
   const [search, setSearch] = useState('')
-  const [filter, setFilter] = useState('all')
+  const [subjectFilter, setSubjectFilter] = useState('')
+
+  // Unique subjects across all teachers, sorted by name
+  const allSubjects = [...new Map(
+    teachers.flatMap(t => t.subjects || []).map(s => [s.id, s])
+  ).values()].sort((a, b) => a.name.localeCompare(b.name))
 
   const filtered = teachers.filter(t => {
     const matchSearch =
       t.name.toLowerCase().includes(search.toLowerCase()) ||
       (t.subjects || []).some(s => s.name.toLowerCase().includes(search.toLowerCase()))
-    if (filter === 'available') return matchSearch && (t.assigned_hours || 0) < t.max_hours
-    if (filter === 'full') return matchSearch && (t.assigned_hours || 0) >= t.max_hours
-    return matchSearch
+    const matchSubject = !subjectFilter || (t.subjects || []).some(s => s.id === subjectFilter)
+    return matchSearch && matchSubject
   })
 
   return (
@@ -52,24 +56,27 @@ export default function SidebarTeachers({ teachers, isDragging }) {
             placeholder="Buscar profesor…"
           />
         </div>
-        <div className="flex gap-2 mt-3">
-          {[
-            { key: 'all', label: 'Todos' },
-            { key: 'available', label: 'Libre' },
-            { key: 'full', label: 'Completo' },
-          ].map(btn => (
-            <button
-              key={btn.key}
-              onClick={() => setFilter(btn.key)}
-              className={`flex-1 text-[10px] font-bold uppercase tracking-wider py-1 rounded-sm border transition-colors ${
-                filter === btn.key
-                  ? 'bg-white text-primary border-white'
-                  : 'bg-transparent text-white/70 border-white/20 hover:bg-white/10 hover:text-white'
-              }`}
-            >
-              {btn.label}
-            </button>
-          ))}
+        <div className="relative mt-3">
+          {subjectFilter && (
+            <span
+              className="absolute left-2.5 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full shrink-0 pointer-events-none"
+              style={{ backgroundColor: allSubjects.find(s => s.id === subjectFilter)?.color }}
+            />
+          )}
+          <select
+            value={subjectFilter}
+            onChange={e => setSubjectFilter(e.target.value ? Number(e.target.value) : '')}
+            aria-label="Filtrar por materia"
+            className={`w-full py-1.5 pr-8 text-xs font-bold border border-white/20 rounded appearance-none bg-white/10 text-white focus:outline-none focus:border-white/40 cursor-pointer hover:bg-white/20 transition-colors ${subjectFilter ? 'pl-7' : 'pl-3'}`}
+          >
+            <option value="" className="text-primary font-bold">Todas las materias</option>
+            {allSubjects.map(s => (
+              <option key={s.id} value={s.id} className="text-primary">{s.name}</option>
+            ))}
+          </select>
+          <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-white/50 text-[18px] pointer-events-none" aria-hidden="true">
+            expand_more
+          </span>
         </div>
       </div>
 

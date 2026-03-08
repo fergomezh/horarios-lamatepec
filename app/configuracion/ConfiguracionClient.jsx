@@ -1,6 +1,5 @@
 'use client'
 import { useState, useRef } from 'react'
-import { useRouter } from 'next/navigation'
 import ConfirmModal from '@/components/ui/ConfirmModal'
 
 const SUBJECT_COLORS = [
@@ -19,7 +18,6 @@ function pickColor(usedColors) {
 }
 
 export default function ConfiguracionClient({ subjects: initialSubjects, gradeHours: initialGradeHours = [], sections: initialSections = [], error }) {
-  const router = useRouter()
   const [subjects, setSubjects] = useState(initialSubjects)
 
   // gradeHours map: `${subject_id}-${grade}` → weekly_hours
@@ -182,7 +180,7 @@ export default function ConfiguracionClient({ subjects: initialSubjects, gradeHo
 
   return (
     <div className="min-h-full py-10 px-4">
-      <div className="w-full bg-primary/10 shadow-paper border border-primary-dark rounded relative pb-24">
+      <div className="w-full bg-primary/10 shadow-paper border border-primary-dark rounded">
         {/* Header */}
         <div className="px-10 pt-10 pb-6 border-b border-primary-dark/60">
           <div className="flex justify-between items-end">
@@ -391,22 +389,6 @@ export default function ConfiguracionClient({ subjects: initialSubjects, gradeHo
             )}
           </section>
         </div>
-
-        {/* Sticky action bar */}
-        <div className="absolute bottom-0 left-0 w-full bg-primary/95 backdrop-blur-sm border-t border-primary-dark px-10 py-4 rounded-b flex justify-between items-center z-10">
-          <div className="flex items-center gap-2 text-white/50 text-xs">
-            <span className="material-symbols-outlined text-sm">info</span>
-            <span>Los cambios se guardan automáticamente.</span>
-          </div>
-          <div className="flex gap-4">
-            <button
-              onClick={() => router.back()}
-              className="px-6 py-2.5 rounded border border-white/20 bg-white/10 text-white font-bold text-xs uppercase tracking-wider hover:bg-white/20 transition-colors"
-            >
-              Volver
-            </button>
-          </div>
-        </div>
       </div>
 
       {/* Confirm delete subject modal */}
@@ -443,11 +425,6 @@ export default function ConfiguracionClient({ subjects: initialSubjects, gradeHo
         </div>
       )}
 
-      <div className="w-full mt-6 text-center">
-        <p className="text-[10px] text-white/30 uppercase tracking-widest font-semibold">
-          Sistema de Gestión Académica Colegio Lamatepec © 2026
-        </p>
-      </div>
     </div>
   )
 }

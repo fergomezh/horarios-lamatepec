@@ -72,19 +72,6 @@ export default function AppLayout({ children }) {
       <main id="main-content" className="flex-1 w-full">
         {children}
       </main>
-
-      {/* Footer */}
-      <footer className="border-t border-primary-dark bg-primary-dark py-4">
-          <div className="px-6 flex flex-col md:flex-row justify-between items-center text-xs text-white/50">
-          <p>© 2026 Colegio Lamatepec. Todos los derechos reservados.</p>
-          <div className="flex items-center gap-6 mt-2 md:mt-0">
-            <span className="flex items-center gap-1 text-success">
-              <span aria-hidden="true" className="w-2 h-2 bg-success rounded-full inline-block"></span>
-              Sistema Operativo v1.0.0
-            </span>
-          </div>
-        </div>
-      </footer>
     </div>
   )
 }

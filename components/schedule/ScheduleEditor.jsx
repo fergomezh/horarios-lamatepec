@@ -6,9 +6,10 @@ import {
   useSensor,
   useSensors,
   PointerSensor,
-  closestCorners,
+  closestCenter,
+  pointerWithin,
 } from '@dnd-kit/core'
-import { restrictToWindowEdges } from '@dnd-kit/modifiers'
+import { restrictToWindowEdges, snapCenterToCursor } from '@dnd-kit/modifiers'
 import SidebarTeachers from '../teachers/SidebarTeachers'
 import ScheduleGrid from './ScheduleGrid'
 import SubjectPickerModal from './SubjectPickerModal'
@@ -131,7 +132,7 @@ export default function ScheduleEditor({
   return (
     <DndContext
       sensors={sensors}
-      collisionDetection={closestCorners}
+      collisionDetection={(args) => pointerWithin(args).length ? pointerWithin(args) : closestCenter(args)}
       modifiers={[restrictToWindowEdges]}
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
@@ -154,7 +155,7 @@ export default function ScheduleEditor({
         </section>
       </div>
 
-      <DragOverlay modifiers={[restrictToWindowEdges]}>
+      <DragOverlay modifiers={[snapCenterToCursor, restrictToWindowEdges]}>
         {activeTeacher && (
           <div className="bg-white p-3 rounded border border-primary shadow-floating flex items-center gap-3 select-none opacity-95 rotate-2 w-[220px] pointer-events-none">
             <div

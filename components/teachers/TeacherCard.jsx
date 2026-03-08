@@ -24,6 +24,7 @@ export default function TeacherCard({ teacher, isDragging = false }) {
       style={style}
       {...listeners}
       {...attributes}
+      suppressHydrationWarning
       className={`bg-white p-3 rounded border border-border-std shadow-card cursor-grab active:cursor-grabbing
         hover:border-primary hover:shadow-md transition-all group flex items-start gap-3 select-none
         ${isCurrentlyDragging ? 'opacity-40' : ''}

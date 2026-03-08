@@ -41,6 +41,17 @@ export default function HorariosClient({ teachers, subjects, sections, slots, sc
     setScheduleOptions(initialOptions ?? [])
   }, [initialOptions])
 
+  // Re-fetch server data when the tab regains focus (e.g. teacher added in another tab)
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        startTransition(() => router.refresh())
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibility)
+    return () => document.removeEventListener('visibilitychange', handleVisibility)
+  }, [router])
+
   // Set active to principal if current activeOptionId no longer exists after refresh
   useEffect(() => {
     if (!scheduleOptions.find(o => o.id === activeOptionId)) {
@@ -345,7 +356,7 @@ export default function HorariosClient({ teachers, subjects, sections, slots, sc
   )
 
   return (
-    <div className="flex flex-col h-[calc(100vh-64px-57px)] overflow-hidden">
+    <div className="flex flex-col h-[calc(100vh-64px)] overflow-hidden">
       {/* Toolbar */}
       <div className="bg-primary border-b border-primary-dark px-6 py-3 flex items-center justify-between shrink-0 shadow-card z-10">
         <div className="flex items-center gap-3 flex-wrap">
