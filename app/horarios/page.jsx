@@ -3,9 +3,54 @@ import HorariosClient from './HorariosClient'
 
 export const dynamic = 'force-dynamic'
 
+async function runMigrations() {
+  try {
+    const { query } = await import('@/lib/db')
+    // Ensure UNIQUE constraint includes option_id so different schedule options
+    // can assign the same section+slot+day independently.
+    await query(`
+      DO $$
+      DECLARE r record;
+      BEGIN
+        FOR r IN (
+          SELECT c.conname
+          FROM pg_constraint c
+          WHERE c.conrelid = 'schedule_assignments'::regclass
+            AND c.contype = 'u'
+            AND NOT EXISTS (
+              SELECT 1 FROM pg_attribute a
+              JOIN unnest(c.conkey) AS k(attnum) ON a.attnum = k.attnum
+              WHERE a.attrelid = c.conrelid AND a.attname = 'option_id'
+            )
+        ) LOOP
+          EXECUTE 'ALTER TABLE schedule_assignments DROP CONSTRAINT ' || quote_ident(r.conname);
+        END LOOP;
+      END $$;
+    `)
+    await query(`
+      DO $$
+      BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_constraint
+          WHERE conrelid = 'schedule_assignments'::regclass
+            AND contype = 'u'
+            AND conname = 'schedule_assignments_option_section_slot_day_key'
+        ) THEN
+          ALTER TABLE schedule_assignments
+            ADD CONSTRAINT schedule_assignments_option_section_slot_day_key
+            UNIQUE (option_id, section_id, slot_id, day);
+        END IF;
+      END $$;
+    `)
+  } catch {
+    // Non-fatal: migration may already be applied or table may not exist yet
+  }
+}
+
 async function getData() {
   try {
     const { query } = await import('@/lib/db')
+    await runMigrations()
 
     const [teachersRes, subjectsRes, sectionsRes, slotsRes, optionsRes, assignmentsRes, gradeHoursRes] = await Promise.all([
       query(`

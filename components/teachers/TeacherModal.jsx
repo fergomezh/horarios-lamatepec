@@ -1,18 +1,12 @@
 'use client'
 import { useState, useEffect } from 'react'
 
-const COLORS = [
-  '#1B2A4E', '#065F46', '#4C1D95', '#92400E', '#0F766E',
-  '#0369A1', '#BE185D', '#78350F', '#3730A3', '#374151',
-]
-
 export default function TeacherModal({ teacher, subjects, onSave, onClose }) {
   const [form, setForm] = useState({
     name: '',
     email: '',
     subject_ids: [],
     max_hours: 25,
-    color: '#1B2A4E',
   })
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -24,7 +18,6 @@ export default function TeacherModal({ teacher, subjects, onSave, onClose }) {
         email: teacher.email || '',
         subject_ids: (teacher.subjects || []).map(s => s.id),
         max_hours: teacher.max_hours || 25,
-        color: teacher.color || '#1B2A4E',
       })
     }
   }, [teacher])
@@ -157,30 +150,9 @@ export default function TeacherModal({ teacher, subjects, onSave, onClose }) {
               max="40"
               inputMode="numeric"
               value={form.max_hours}
-              onChange={e => setForm(f => ({ ...f, max_hours: parseInt(e.target.value) }))}
+              onChange={e => setForm(f => ({ ...f, max_hours: e.target.value === '' ? '' : parseInt(e.target.value) }))}
               className="institutional-input w-full px-3 py-2 text-sm border border-border-std rounded text-text-main"
             />
-          </div>
-
-          <div>
-            <label className="block text-[11px] uppercase tracking-wider font-bold text-text-muted mb-2">
-              Color de identificación
-            </label>
-            <div className="flex gap-2 flex-wrap">
-              {COLORS.map(c => (
-                <button
-                  key={c}
-                  type="button"
-                  aria-label={`Seleccionar color ${c}`}
-                  aria-pressed={form.color === c}
-                  onClick={() => setForm(f => ({ ...f, color: c }))}
-                  className={`w-7 h-7 rounded-full border-2 transition-all ${
-                    form.color === c ? 'border-text-main scale-110' : 'border-transparent'
-                  }`}
-                  style={{ backgroundColor: c }}
-                />
-              ))}
-            </div>
           </div>
 
           <div className="flex justify-end gap-3 pt-2 border-t border-border-std">

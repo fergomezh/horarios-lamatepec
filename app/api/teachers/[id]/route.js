@@ -4,17 +4,16 @@ import { query } from '@/lib/db'
 async function getTeacherWithSubjects(id) {
   const r = await query(`
     SELECT t.*,
+      COALESCE(COUNT(DISTINCT sa.id), 0)::int as assigned_hours,
       COALESCE(
         JSON_AGG(DISTINCT JSONB_BUILD_OBJECT('id', s.id, 'name', s.name, 'color', s.color, 'weekly_hours', s.weekly_hours))
         FILTER (WHERE s.id IS NOT NULL),
         '[]'
-      ) as subjects,
-      COUNT(DISTINCT sa.id) as assigned_hours
+      ) as subjects
     FROM teachers t
     LEFT JOIN teacher_subjects ts ON ts.teacher_id = t.id
     LEFT JOIN subjects s ON s.id = ts.subject_id
     LEFT JOIN schedule_assignments sa ON sa.teacher_id = t.id
-      JOIN schedule_options so ON so.id = sa.option_id AND so.is_principal = true
     WHERE t.id = $1
     GROUP BY t.id
   `, [id])
@@ -36,11 +35,11 @@ export async function PUT(request, { params }) {
   try {
     const { id } = await params
     const body = await request.json()
-    const { name, email, max_hours, color, subject_ids = [] } = body
+    const { name, email, max_hours, subject_ids = [] } = body
 
     await query(
-      `UPDATE teachers SET name=$1, email=$2, max_hours=$3, color=$4 WHERE id=$5`,
-      [name, email, max_hours, color, id]
+      `UPDATE teachers SET name=$1, email=$2, max_hours=$3 WHERE id=$4`,
+      [name, email, max_hours, id]
     )
 
     // Replace subjects
