@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lamatepec Classic - Master Dashboard</title>
+<!-- Fonts: Playfair Display for headings/serif, Inter for body/sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1B2A4E", // Lamatepec Navy
+                        "secondary": "#C5A065", // Lamatepec Gold
+                        "background-light": "#F8F9FA", // Paper feel
+                        "background-dark": "#111621",
+                        "surface": "#FFFFFF",
+                        "text-main": "#0F172A",
+                        "text-muted": "#64748B",
+                        "success": "#15803D",
+                        "error": "#B91C1C",
+                        "conflict": "#FCA5A5",
+                        "border-std": "#E2E8F0"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "serif": ["Playfair Display", "serif"],
+                        "sans": ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "4px",
+                        "sm": "2px",
+                        "md": "4px",
+                        "lg": "6px",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        "card": "0 1px 3px rgba(0,0,0,0.05)"
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom overrides for strict design system */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F9FA;
+            color: #0F172A;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        h1, h2, h3, h4, .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .border-crisp {
+            border: 1px solid #E2E8F0;
+        }
+
+        /* Chart Bar Animation */
+        @keyframes growUp {
+            from { height: 0; }
+            to { height: var(--h); }
+        }
+        .bar-animate {
+            animation: growUp 1s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-background-light min-h-screen flex flex-col">
+<!-- Top Navigation / Header -->
+<header class="bg-primary text-white shadow-md border-b-4 border-secondary sticky top-0 z-50">
+<div class="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
+<!-- Left: Menu & Branding -->
+<div class="flex items-center gap-4">
+<button class="p-1 hover:bg-white/10 rounded transition-colors text-secondary">
+<span class="material-symbols-outlined text-[28px]">menu</span>
+</button>
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 bg-secondary rounded flex items-center justify-center text-primary font-serif font-bold text-xl">L</div>
+<div class="flex flex-col">
+<span class="font-serif font-bold text-lg leading-tight tracking-wide">COLEGIO LAMATEPEC</span>
+<span class="text-[10px] uppercase tracking-widest text-gray-300 font-medium">Sistema de Gestión Académica</span>
+</div>
+</div>
+</div>
+<!-- Center: Dashboard Title -->
+<div class="hidden md:block">
+<h1 class="font-serif text-xl font-semibold tracking-wide text-white/90">Panel de Control Maestro</h1>
+</div>
+<!-- Right: User & Actions -->
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-3 text-sm">
+<span class="text-right hidden sm:block">
+<span class="block font-bold text-white">Director Académico</span>
+<span class="block text-xs text-secondary">Admin</span>
+</span>
+<div class="w-9 h-9 bg-white/10 rounded-full border border-white/20 flex items-center justify-center text-white font-serif relative overflow-hidden">
+<img alt="User Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqJuwG328DG7ESJx15aSlQE6tsm-OQXKf5iwJb-f4xsRR6pVzLtYWscHZSJBpchMbbdTorcY-kbByoRzsvTWnMC7C--905GN9lM-cqqW_cWl0-9MEct4j4awvXZcVxdz0rEped-NZoXs_nqzuGZblhuY4h7_rq1xvVC8szSZdrifITiTajCPn9H4NmDfaKeVKIBe_VjSOyafumRNG56GNBy22xpkgiCPSDreQms9wighaM3a9Wq5iNUXNNxeVMSKoej0gGI6crJyU"/>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow w-full max-w-[1400px] mx-auto p-6 md:p-8 space-y-8">
+<!-- Action Bar / Filters -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-border-std pb-4">
+<div>
+<h2 class="text-2xl font-serif font-bold text-primary">Resumen Ejecutivo</h2>
+<p class="text-text-muted text-sm mt-1">Estado actual de la programación académica 2024 - Semestre II</p>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2 bg-white border border-border-std rounded px-3 py-1.5 shadow-sm">
+<span class="material-symbols-outlined text-text-muted text-[18px]">calendar_today</span>
+<span class="text-sm font-medium text-text-main">Semana 12</span>
+</div>
+<button class="flex items-center gap-2 bg-white hover:bg-gray-50 text-primary border border-border-std font-medium text-sm px-4 py-1.5 rounded shadow-sm transition-colors">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                    Exportar Reporte
+                </button>
+<button class="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white font-medium text-sm px-4 py-1.5 rounded shadow-sm transition-colors">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                    Nueva Asignación
+                </button>
+</div>
+</div>
+<!-- KPI Stats Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Stat Card 1 -->
+<div class="bg-surface border-crisp rounded p-6 shadow-card group hover:border-primary/30 transition-colors relative overflow-hidden">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-xs font-bold tracking-widest text-text-muted uppercase">Horas Asignadas</h3>
+<span class="material-symbols-outlined text-primary/40">schedule</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-serif text-[42px] font-bold text-primary leading-none">84%</span>
+<span class="text-sm font-medium text-success flex items-center">
+<span class="material-symbols-outlined text-[16px] mr-0.5">trending_up</span>
+                        +12%
+                    </span>
+</div>
+<div class="w-full bg-gray-100 h-1.5 mt-4 rounded-full overflow-hidden">
+<div class="bg-secondary h-full rounded-full" style="width: 84%"></div>
+</div>
+<p class="text-xs text-text-muted mt-2">Target semanal: 95%</p>
+</div>
+<!-- Stat Card 2 -->
+<div class="bg-surface border-crisp rounded p-6 shadow-card group hover:border-error/30 transition-colors relative">
+<div class="absolute top-0 right-0 w-16 h-16 bg-error/5 rounded-bl-full -mr-8 -mt-8"></div>
+<div class="flex justify-between items-start mb-4 relative z-10">
+<h3 class="text-xs font-bold tracking-widest text-text-muted uppercase">Conflictos</h3>
+<span class="material-symbols-outlined text-error">warning</span>
+</div>
+<div class="flex items-baseline gap-2 relative z-10">
+<span class="font-serif text-[42px] font-bold text-primary leading-none">12</span>
+<span class="text-sm font-medium text-error font-serif italic">Críticos</span>
+</div>
+<div class="w-full bg-gray-100 h-1.5 mt-4 rounded-full overflow-hidden">
+<div class="bg-error h-full rounded-full" style="width: 35%"></div>
+</div>
+<p class="text-xs text-text-muted mt-2">Requiere atención inmediata</p>
+</div>
+<!-- Stat Card 3 -->
+<div class="bg-surface border-crisp rounded p-6 shadow-card group hover:border-primary/30 transition-colors">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-xs font-bold tracking-widest text-text-muted uppercase">Cobertura Docente</h3>
+<span class="material-symbols-outlined text-primary/40">groups</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-serif text-[42px] font-bold text-primary leading-none">95%</span>
+<span class="text-sm font-medium text-success flex items-center">
+<span class="material-symbols-outlined text-[16px] mr-0.5">check_circle</span>
+                        Optimo
+                    </span>
+</div>
+<div class="w-full bg-gray-100 h-1.5 mt-4 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 95%"></div>
+</div>
+<p class="text-xs text-text-muted mt-2">Solo 2 vacantes pendientes</p>
+</div>
+<!-- Stat Card 4 -->
+<div class="bg-surface border-crisp rounded p-6 shadow-card group hover:border-primary/30 transition-colors">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-xs font-bold tracking-widest text-text-muted uppercase">Aulas Vacías</h3>
+<span class="material-symbols-outlined text-primary/40">meeting_room</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-serif text-[42px] font-bold text-primary leading-none">3</span>
+<span class="text-sm font-medium text-text-muted font-serif italic">Disponibles</span>
+</div>
+<div class="w-full bg-gray-100 h-1.5 mt-4 rounded-full overflow-hidden">
+<div class="bg-secondary h-full rounded-full" style="width: 15%"></div>
+</div>
+<p class="text-xs text-text-muted mt-2">Optimización de espacio: 92%</p>
+</div>
+</div>
+<!-- Dashboard Split View -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 h-full">
+<!-- Main Chart Area (2/3) -->
+<div class="lg:col-span-2 flex flex-col h-full">
+<div class="bg-surface border-crisp rounded p-6 shadow-card flex-1 flex flex-col">
+<div class="flex items-center justify-between mb-8">
+<div>
+<h3 class="text-lg font-serif font-bold text-primary">Distribución de Carga Académica</h3>
+<p class="text-xs text-text-muted mt-1">Horas lectivas por departamento (Semanal)</p>
+</div>
+<!-- Chart Legend -->
+<div class="flex items-center gap-4 text-xs font-medium">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 bg-primary rounded-sm"></span>
+<span>Asignadas</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 bg-gray-200 rounded-sm"></span>
+<span class="text-text-muted">Pendientes</span>
+</div>
+</div>
+</div>
+<!-- Bar Chart Implementation -->
+<div class="flex-1 w-full min-h-[300px] flex items-end justify-between gap-2 sm:gap-6 px-4 pb-4 border-b border-l border-border-std relative">
+<!-- Y-Axis Grid Lines (Visual only) -->
+<div class="absolute inset-0 flex flex-col justify-between pointer-events-none pb-4 pl-0 pr-0">
+<div class="w-full border-t border-dashed border-gray-100 h-0"></div>
+<div class="w-full border-t border-dashed border-gray-100 h-0"></div>
+<div class="w-full border-t border-dashed border-gray-100 h-0"></div>
+<div class="w-full border-t border-dashed border-gray-100 h-0"></div>
+<div class="w-full border-t border-dashed border-gray-100 h-0"></div>
+</div>
+<!-- Bar Group: Matemáticas -->
+<div class="flex flex-col items-center gap-3 group w-full relative z-10">
+<div class="relative w-full max-w-[60px] h-[240px] bg-gray-100 rounded-t-sm overflow-hidden flex items-end">
+<div class="w-full bg-primary rounded-t-sm bar-animate hover:bg-secondary transition-colors cursor-pointer" style="--h: 85%; height: 85%;">
+<div class="opacity-0 group-hover:opacity-100 absolute -top-10 left-1/2 -translate-x-1/2 bg-primary text-white text-xs py-1 px-2 rounded pointer-events-none transition-opacity">
+                                        120h
+                                    </div>
+</div>
+</div>
+<span class="text-xs font-bold text-text-main tracking-wide uppercase text-center">Matemáticas</span>
+</div>
+<!-- Bar Group: Ciencias -->
+<div class="flex flex-col items-center gap-3 group w-full relative z-10">
+<div class="relative w-full max-w-[60px] h-[240px] bg-gray-100 rounded-t-sm overflow-hidden flex items-end">
+<div class="w-full bg-primary rounded-t-sm bar-animate hover:bg-secondary transition-colors cursor-pointer" style="--h: 65%; height: 65%;">
+<div class="opacity-0 group-hover:opacity-100 absolute -top-10 left-1/2 -translate-x-1/2 bg-primary text-white text-xs py-1 px-2 rounded pointer-events-none transition-opacity">
+                                        92h
+                                    </div>
+</div>
+</div>
+<span class="text-xs font-bold text-text-main tracking-wide uppercase text-center">Ciencias</span>
+</div>
+<!-- Bar Group: Lenguaje -->
+<div class="flex flex-col items-center gap-3 group w-full relative z-10">
+<div class="relative w-full max-w-[60px] h-[240px] bg-gray-100 rounded-t-sm overflow-hidden flex items-end">
+<div class="w-full bg-primary rounded-t-sm bar-animate hover:bg-secondary transition-colors cursor-pointer" style="--h: 92%; height: 92%;">
+<div class="opacity-0 group-hover:opacity-100 absolute -top-10 left-1/2 -translate-x-1/2 bg-primary text-white text-xs py-1 px-2 rounded pointer-events-none transition-opacity">
+                                        145h
+                                    </div>
+</div>
+</div>
+<span class="text-xs font-bold text-text-main tracking-wide uppercase text-center">Lenguaje</span>
+</div>
+<!-- Bar Group: Historia -->
+<div class="flex flex-col items-center gap-3 group w-full relative z-10">
+<div class="relative w-full max-w-[60px] h-[240px] bg-gray-100 rounded-t-sm overflow-hidden flex items-end">
+<div class="w-full bg-primary rounded-t-sm bar-animate hover:bg-secondary transition-colors cursor-pointer" style="--h: 45%; height: 45%;">
+<div class="opacity-0 group-hover:opacity-100 absolute -top-10 left-1/2 -translate-x-1/2 bg-primary text-white text-xs py-1 px-2 rounded pointer-events-none transition-opacity">
+                                        64h
+                                    </div>
+</div>
+</div>
+<span class="text-xs font-bold text-text-main tracking-wide uppercase text-center">Historia</span>
+</div>
+<!-- Bar Group: Artes -->
+<div class="flex flex-col items-center gap-3 group w-full relative z-10">
+<div class="relative w-full max-w-[60px] h-[240px] bg-gray-100 rounded-t-sm overflow-hidden flex items-end">
+<div class="w-full bg-primary rounded-t-sm bar-animate hover:bg-secondary transition-colors cursor-pointer" style="--h: 30%; height: 30%;">
+<div class="opacity-0 group-hover:opacity-100 absolute -top-10 left-1/2 -translate-x-1/2 bg-primary text-white text-xs py-1 px-2 rounded pointer-events-none transition-opacity">
+                                        40h
+                                    </div>
+</div>
+</div>
+<span class="text-xs font-bold text-text-main tracking-wide uppercase text-center">Artes</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Side Panel: Alerts & Notifications (1/3) -->
+<div class="lg:col-span-1 flex flex-col h-full">
+<div class="bg-surface border-crisp rounded p-0 shadow-card flex-1 flex flex-col overflow-hidden">
+<div class="p-5 border-b border-border-std bg-gray-50 flex items-center justify-between">
+<h3 class="text-lg font-serif font-bold text-primary">Alertas Recientes</h3>
+<span class="bg-error text-white text-[10px] font-bold px-2 py-1 rounded-full">12 NUEVAS</span>
+</div>
+<div class="flex-1 overflow-y-auto p-0">
+<ul class="divide-y divide-border-std">
+<!-- Alert Item 1 -->
+<li class="p-4 hover:bg-gray-50 transition-colors border-l-4 border-error bg-error/5 cursor-pointer group">
+<div class="flex items-start gap-3">
+<div class="mt-0.5 min-w-[20px]">
+<span class="material-symbols-outlined text-error text-[20px]">error</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<p class="text-sm font-bold text-primary">Conflicto de Horario</p>
+<span class="text-[10px] text-text-muted font-medium">10:15 AM</span>
+</div>
+<p class="text-xs text-text-main mt-1 leading-relaxed">
+<span class="font-semibold">Prof. Mendez</span> tiene doble asignación el Martes, Bloque 3.
+                                        </p>
+<button class="mt-3 text-xs font-bold text-error border border-error/30 bg-white px-2 py-1 rounded hover:bg-error hover:text-white transition-all uppercase tracking-wide">
+                                            Resolver Ahora
+                                        </button>
+</div>
+</div>
+</li>
+<!-- Alert Item 2 -->
+<li class="p-4 hover:bg-gray-50 transition-colors border-l-4 border-secondary cursor-pointer">
+<div class="flex items-start gap-3">
+<div class="mt-0.5 min-w-[20px]">
+<span class="material-symbols-outlined text-secondary text-[20px]">warning</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<p class="text-sm font-bold text-primary">Sobrecarga Docente</p>
+<span class="text-[10px] text-text-muted font-medium">09:30 AM</span>
+</div>
+<p class="text-xs text-text-main mt-1 leading-relaxed">
+<span class="font-semibold">Prof. Sarah Connor</span> excede el límite semanal de 30 horas.
+                                        </p>
+</div>
+</div>
+</li>
+<!-- Alert Item 3 -->
+<li class="p-4 hover:bg-gray-50 transition-colors border-l-4 border-gray-300 cursor-pointer">
+<div class="flex items-start gap-3">
+<div class="mt-0.5 min-w-[20px]">
+<span class="material-symbols-outlined text-text-muted text-[20px]">info</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<p class="text-sm font-bold text-text-main">Aula Sin Asignar</p>
+<span class="text-[10px] text-text-muted font-medium">Ayer</span>
+</div>
+<p class="text-xs text-text-muted mt-1 leading-relaxed">
+                                            Laboratorio de Química vacío durante Bloque 4, Jueves.
+                                        </p>
+</div>
+</div>
+</li>
+<!-- Alert Item 4 -->
+<li class="p-4 hover:bg-gray-50 transition-colors border-l-4 border-gray-300 cursor-pointer">
+<div class="flex items-start gap-3">
+<div class="mt-0.5 min-w-[20px]">
+<span class="material-symbols-outlined text-text-muted text-[20px]">info</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<p class="text-sm font-bold text-text-main">Requisito Pendiente</p>
+<span class="text-[10px] text-text-muted font-medium">Ayer</span>
+</div>
+<p class="text-xs text-text-muted mt-1 leading-relaxed">
+                                            9no Grado B requiere 2 horas más de Educación Física.
+                                        </p>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="p-3 bg-gray-50 border-t border-border-std text-center">
+<button class="text-xs font-bold text-primary uppercase tracking-wider hover:text-secondary transition-colors">
+                            Ver Todas las Alertas
+                        </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Lower Section: Quick Links Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="bg-surface border-crisp rounded p-5 shadow-card hover:shadow-md transition-shadow cursor-pointer group flex items-center justify-between">
+<div>
+<h4 class="font-bold text-primary mb-1 group-hover:text-secondary transition-colors">Directorio Docente</h4>
+<p class="text-xs text-text-muted">Gestionar perfiles y disponibilidad</p>
+</div>
+<div class="w-10 h-10 rounded bg-primary/5 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined">person_search</span>
+</div>
+</div>
+<div class="bg-surface border-crisp rounded p-5 shadow-card hover:shadow-md transition-shadow cursor-pointer group flex items-center justify-between">
+<div>
+<h4 class="font-bold text-primary mb-1 group-hover:text-secondary transition-colors">Configuración Académica</h4>
+<p class="text-xs text-text-muted">Ajustar bloques y restricciones</p>
+</div>
+<div class="w-10 h-10 rounded bg-primary/5 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</div>
+</div>
+<div class="bg-surface border-crisp rounded p-5 shadow-card hover:shadow-md transition-shadow cursor-pointer group flex items-center justify-between">
+<div>
+<h4 class="font-bold text-primary mb-1 group-hover:text-secondary transition-colors">Reportes Financieros</h4>
+<p class="text-xs text-text-muted">Cálculo de horas extra y nómina</p>
+</div>
+<div class="w-10 h-10 rounded bg-primary/5 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined">payments</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="mt-auto border-t border-border-std bg-white py-6">
+<div class="max-w-[1400px] mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-xs text-text-muted">
+<p>© 2024 Colegio Lamatepec. Todos los derechos reservados.</p>
+<div class="flex items-center gap-6 mt-2 md:mt-0">
+<a class="hover:text-primary transition-colors" href="#">Soporte Técnico</a>
+<a class="hover:text-primary transition-colors" href="#">Manual de Usuario</a>
+<span class="flex items-center gap-1 text-success">
+<span class="w-2 h-2 bg-success rounded-full"></span>
+                    Sistema Operativo v2.4.1
+                </span>
+</div>
+</div>
+</footer>
+</body></html>
