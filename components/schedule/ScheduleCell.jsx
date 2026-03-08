@@ -13,7 +13,7 @@ export default function ScheduleCell({ id, assignment, slotId, day, isDragging, 
       }`}>
         <div
           className="w-full h-full rounded p-1 flex flex-col justify-between bg-white shadow-card"
-          style={{ border: `2px solid ${color}` }}
+          style={{ border: `3px solid ${color}` }}
         >
           <div className="flex justify-between items-start gap-0.5">
             <span

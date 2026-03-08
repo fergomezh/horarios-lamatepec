@@ -30,6 +30,7 @@ export default function HorariosClient({ teachers, subjects, sections, slots, sc
   const [activeOptionId, setActiveOptionId] = useState(initialOptions?.[0]?.id ?? null)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(null) // option id to delete
+  const [confirmRemoveAssignment, setConfirmRemoveAssignment] = useState(null) // assignment to delete
   const [settingPrincipal, setSettingPrincipal] = useState(false)
   const [creatingOption, setCreatingOption] = useState(false)
   const buttonRef = useRef(null)
@@ -234,13 +235,22 @@ export default function HorariosClient({ teachers, subjects, sections, slots, sc
     setTimeout(() => setToast(null), 3500)
   }
 
-  const handleRemove = async (assignmentId) => {
-    const res = await fetch(`/api/schedule-assignments/${assignmentId}`, { method: 'DELETE' })
+  const handleRemove = (assignmentId) => {
+    const assignment = activeAssignments.find(a => a.id === assignmentId)
+    if (assignment) {
+      setConfirmRemoveAssignment(assignment)
+    }
+  }
+
+  const confirmRemoveAssignmentAction = async () => {
+    if (!confirmRemoveAssignment) return
+    const res = await fetch(`/api/schedule-assignments/${confirmRemoveAssignment.id}`, { method: 'DELETE' })
     if (!res.ok) {
       const err = await res.json().catch(() => ({}))
       showToast(err.error || 'Error al eliminar la asignación', true)
       return
     }
+    setConfirmRemoveAssignment(null)
     startTransition(() => { router.refresh() })
   }
 
@@ -471,6 +481,19 @@ export default function HorariosClient({ teachers, subjects, sections, slots, sc
           variant="danger"
           onConfirm={confirmDeleteOption}
           onCancel={() => setConfirmDelete(null)}
+        />
+      )}
+
+      {/* Confirm remove assignment */}
+      {confirmRemoveAssignment && (
+        <ConfirmModal
+          title="Eliminar materia del horario"
+          message={`¿Eliminar "${confirmRemoveAssignment.subject_name}" del ${confirmRemoveAssignment.day} a las ${confirmRemoveAssignment.start_time}? Esta acción no se puede deshacer.`}
+          confirmLabel="Eliminar"
+          cancelLabel="Cancelar"
+          variant="danger"
+          onConfirm={confirmRemoveAssignmentAction}
+          onCancel={() => setConfirmRemoveAssignment(null)}
         />
       )}
 

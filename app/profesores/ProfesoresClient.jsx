@@ -2,6 +2,7 @@
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import TeacherModal from '@/components/teachers/TeacherModal'
+import TeacherScheduleModal from '@/components/teachers/TeacherScheduleModal'
 import ConfirmModal from '@/components/ui/ConfirmModal'
 import { getInitials } from '@/lib/schedule-utils'
 
@@ -16,6 +17,7 @@ export default function ProfesoresClient({ teachers: initialTeachers, subjects, 
   const [deptFilter, setDeptFilter] = useState('')
   const [page, setPage] = useState(1)
   const [modal, setModal] = useState(null) // null | 'new' | teacher obj
+  const [scheduleTeacher, setScheduleTeacher] = useState(null) // teacher obj for schedule modal
   const [confirmDelete, setConfirmDelete] = useState(null) // teacher obj to delete
 
   const filtered = teachers.filter(t => {
@@ -250,6 +252,13 @@ export default function ProfesoresClient({ teachers: initialTeachers, subjects, 
                       <td className="px-6 py-3 text-center">
                         <div className="flex items-center justify-center gap-1">
                           <button
+                            onClick={() => setScheduleTeacher(teacher)}
+                            className="p-1.5 text-white/50 hover:text-secondary hover:bg-secondary/10 rounded transition-all"
+                            aria-label={`Ver horario de ${teacher.name}`}
+                          >
+                            <span className="material-symbols-outlined text-[18px]" aria-hidden="true">calendar_month</span>
+                          </button>
+                          <button
                             onClick={() => setModal(teacher)}
                             className="p-1.5 text-white/50 hover:text-white hover:bg-white/10 rounded transition-all"
                             aria-label={`Editar a ${teacher.name}`}
@@ -307,6 +316,14 @@ export default function ProfesoresClient({ teachers: initialTeachers, subjects, 
           subjects={subjects}
           onSave={handleSave}
           onClose={() => setModal(null)}
+        />
+      )}
+
+      {/* Teacher Schedule Modal */}
+      {scheduleTeacher && (
+        <TeacherScheduleModal
+          teacher={scheduleTeacher}
+          onClose={() => setScheduleTeacher(null)}
         />
       )}
 
