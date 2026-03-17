@@ -2,7 +2,7 @@
 import { useDraggable } from '@dnd-kit/core'
 import { getInitials } from '@/lib/schedule-utils'
 
-export default function TeacherCard({ teacher, isDragging = false }) {
+export default function TeacherCard({ teacher, isDragging = false, onSelect, isSelected = false }) {
   const { attributes, listeners, setNodeRef, transform, isDragging: isCurrentlyDragging } = useDraggable({
     id: `teacher-${teacher.id}`,
     data: { type: 'teacher', teacher },
@@ -22,13 +22,16 @@ export default function TeacherCard({ teacher, isDragging = false }) {
     <div
       ref={setNodeRef}
       style={style}
+      aria-label={`${teacher.name}${isSelected ? ', seleccionado' : ''}. Arrastrar o presionar para asignar`}
       {...listeners}
       {...attributes}
+      onClick={() => onSelect?.(teacher)}
       suppressHydrationWarning
-      className={`bg-white p-2 rounded border border-border-std shadow-card cursor-grab active:cursor-grabbing
+      className={`bg-white p-2 rounded border shadow-card cursor-grab active:cursor-grabbing
         hover:border-primary hover:shadow-md transition-all group flex items-center gap-2 select-none
         ${isCurrentlyDragging ? 'opacity-40' : ''}
-        ${isFull ? 'opacity-60' : ''}`}
+        ${isFull ? 'opacity-60' : ''}
+        ${isSelected ? 'ring-2 ring-secondary border-secondary bg-secondary/10' : 'border-border-std'}`}
     >
       {/* Avatar */}
       <div
@@ -52,7 +55,7 @@ export default function TeacherCard({ teacher, isDragging = false }) {
             {(teacher.subjects || []).map(s => (
               <span
                 key={s.id}
-                className="text-[8px] font-bold uppercase tracking-wide px-1 py-0.5 rounded"
+                className="text-[10px] font-bold uppercase tracking-wide px-1 py-0.5 rounded"
                 style={{ backgroundColor: s.color + '20', color: s.color }}
               >
                 {s.name.split(' ')[0]}
@@ -60,7 +63,7 @@ export default function TeacherCard({ teacher, isDragging = false }) {
             ))}
           </div>
         ) : (
-          <p className="text-[10px] text-text-muted truncate">Sin materia</p>
+          <p className="text-[11px] text-text-muted truncate">Sin materia</p>
         )}
 
         {/* Workload bar */}

@@ -16,6 +16,13 @@ export default function AppLayout({ children }) {
 
   return (
     <div className="bg-background min-h-screen flex flex-col">
+      {/* Skip to main content for keyboard users */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-secondary focus:text-primary focus:font-bold focus:rounded focus:shadow-floating"
+      >
+        Saltar al contenido
+      </a>
       {/* Top Header */}
       <header className="bg-primary text-white shadow-md border-b-4 border-secondary sticky top-0 z-50">
         <div className="px-6 h-16 flex items-center justify-between">
@@ -29,7 +36,7 @@ export default function AppLayout({ children }) {
                 <span className="font-serif font-bold text-lg leading-tight tracking-wide">
                   COLEGIO LAMATEPEC
                 </span>
-                <span className="text-[10px] uppercase tracking-widest text-gray-300 font-medium">
+                <span className="text-xs uppercase tracking-widest text-white/80 font-medium">
                   Sistema de Gestión Académica
                 </span>
               </div>
@@ -47,7 +54,7 @@ export default function AppLayout({ children }) {
                   className={`text-sm font-medium transition-colors pb-1 ${
                     isActive
                       ? 'text-secondary border-b-2 border-secondary font-bold'
-                      : 'text-white/70 hover:text-white'
+                      : 'text-white/80 hover:text-white'
                   }`}
                 >
                   {link.label}

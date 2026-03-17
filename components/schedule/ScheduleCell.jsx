@@ -1,14 +1,14 @@
 'use client'
 import { useDroppable } from '@dnd-kit/core'
 
-export default function ScheduleCell({ id, assignment, slotId, day, isDragging, dragState, isOver, onRemove }) {
+export default function ScheduleCell({ id, assignment, slotId, day, isDragging, dragState, isOver, onRemove, onCellClick }) {
   const { setNodeRef } = useDroppable({ id, data: { slotId, day } })
 
   // ── Occupied cell (teacher assigned) ──────────────────────────────────────
   if (assignment?.teacher_id) {
     const color = assignment.subject_color || '#1B2A4E'
     return (
-      <div className={`p-0.5 h-[52px] relative group border-b border-border-std transition-all ${
+      <div role="gridcell" className={`p-0.5 h-[52px] relative group border-b border-border-std transition-all ${
         isDragging ? 'opacity-50' : ''
       }`}>
         <div
@@ -17,7 +17,8 @@ export default function ScheduleCell({ id, assignment, slotId, day, isDragging, 
         >
           <div className="flex justify-between items-start gap-0.5">
             <span
-              className="text-[11px] font-extrabold uppercase tracking-wide leading-tight truncate"
+              className="text-xs font-extrabold uppercase tracking-wide leading-tight truncate"
+              title={assignment.subject_name}
               style={{ color }}
             >
               {assignment.subject_name}
@@ -26,14 +27,14 @@ export default function ScheduleCell({ id, assignment, slotId, day, isDragging, 
               <button
                 onClick={() => onRemove(assignment.id)}
                 aria-label={`Quitar ${assignment.subject_name}`}
-                className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0 rounded hover:bg-gray-100"
+                className="opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity shrink-0 rounded hover:bg-gray-100"
                 style={{ color }}
               >
                 <span className="material-symbols-outlined text-[10px]" aria-hidden="true">close</span>
               </button>
             )}
           </div>
-          <p className="text-[10px] text-text-muted font-medium leading-tight truncate">
+          <p className="text-[11px] text-text-muted font-medium leading-tight truncate" title={assignment.teacher_name}>
             {assignment.teacher_name}
           </p>
         </div>
@@ -56,7 +57,7 @@ export default function ScheduleCell({ id, assignment, slotId, day, isDragging, 
       content = (
         <div className="flex flex-col items-center justify-center h-full gap-0.5">
           <span className="material-symbols-outlined text-error text-[14px]" aria-hidden="true">block</span>
-          <span className="text-[8px] font-bold text-error uppercase tracking-wide text-center leading-tight px-0.5">
+          <span className="text-[10px] font-bold text-error uppercase tracking-wide text-center leading-tight px-0.5">
             {dragState.teacherBusy ? 'Ocupado' : 'Celda'}
           </span>
         </div>
@@ -67,7 +68,7 @@ export default function ScheduleCell({ id, assignment, slotId, day, isDragging, 
       content = (
         <div className="flex flex-col items-center justify-center h-full gap-0.5">
           <span className="material-symbols-outlined text-success text-[14px]" aria-hidden="true">add_circle</span>
-          <span className="text-[8px] font-bold text-success uppercase tracking-wide">Soltar</span>
+          <span className="text-[10px] font-bold text-success uppercase tracking-wide">Soltar</span>
         </div>
       )
     }
@@ -90,10 +91,11 @@ export default function ScheduleCell({ id, assignment, slotId, day, isDragging, 
   }
 
   return (
-    <div ref={setNodeRef} className="p-0.5 h-[52px] relative group border-b border-border-std">
+    <div ref={setNodeRef} role="gridcell" className="p-0.5 h-[52px] relative group border-b border-border-std">
       <div
-        className="w-full h-full rounded flex items-center justify-center transition-all duration-150"
+        className={`w-full h-full rounded flex items-center justify-center transition-all duration-150 ${onCellClick && !dragState?.blocked ? 'cursor-pointer' : ''}`}
         style={{ backgroundColor: bg, border }}
+        onClick={!isDragging && onCellClick && !dragState?.blocked ? onCellClick : undefined}
       >
         {content}
         {!isDragging && (

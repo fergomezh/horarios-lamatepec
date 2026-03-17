@@ -21,6 +21,8 @@ export default function SectionSelector({ sections = [], selectedGrade, selected
                 <button
                   key={s.id}
                   onClick={() => onSelect(grade, s.section)}
+                  aria-pressed={isActive}
+                  aria-label={`Sección ${grade}° ${s.section}`}
                   className={`px-3 py-1 text-sm font-bold rounded border transition-all ${
                     isActive
                       ? 'bg-white text-primary border-white shadow-card'

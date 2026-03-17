@@ -17,7 +17,7 @@ export default function SubjectProgress({ subjects, assignments, sectionId, grad
         <div
           key={s.id}
           title={`${s.name}: ${s.assigned}/${s.weekly_hours} horas`}
-          className={`flex items-center gap-1 px-2 py-1 rounded border text-[10px] font-bold uppercase tracking-wide whitespace-nowrap ${
+          className={`flex items-center gap-1 px-2 py-1 rounded border text-[11px] font-bold uppercase tracking-wide whitespace-nowrap ${
             s.complete
               ? 'border-success/40 bg-success-light text-success'
               : 'border-white/20 bg-white/10 text-white/80'

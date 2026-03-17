@@ -489,7 +489,10 @@ export default function HorariosPrimariaClient({ teachers, subjects, sections, s
 
       {/* Toast */}
       {toast && (
-        <div className={`fixed bottom-6 right-6 flex items-center gap-3 px-4 py-3 rounded shadow-floating z-50 toast-enter ${
+        <div
+          role={toast.isError ? 'alert' : 'status'}
+          aria-live={toast.isError ? 'assertive' : 'polite'}
+          className={`fixed bottom-6 right-6 flex items-center gap-3 px-4 py-3 rounded shadow-floating z-50 toast-enter ${
           toast.isError ? 'bg-error text-white' : 'bg-secondary text-primary'
         }`}>
           <span className="material-symbols-outlined" aria-hidden="true">

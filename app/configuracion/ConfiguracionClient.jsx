@@ -335,6 +335,7 @@ export default function ConfiguracionClient({ subjects: initialSubjects, gradeHo
                         <button
                           onClick={() => setConfirmSection(sec)}
                           className="text-white/40 hover:text-error opacity-0 group-hover:opacity-100 transition-all p-0.5 rounded-full"
+                          aria-label={`Eliminar sección ${sec.grade}° ${sec.section}`}
                           title="Eliminar sección"
                         >
                           <span className="material-symbols-outlined text-[14px]">close</span>
@@ -352,8 +353,9 @@ export default function ConfiguracionClient({ subjects: initialSubjects, gradeHo
             {/* Add new section */}
             <div className="flex items-end gap-3 p-4 bg-white/5 border border-dashed border-secondary/40 rounded">
               <div>
-                <label className="block text-[11px] uppercase tracking-wider font-bold text-white/50 mb-1">Grado</label>
+                <label htmlFor="section-grade" className="block text-[11px] uppercase tracking-wider font-bold text-white/50 mb-1">Grado</label>
                 <select
+                  id="section-grade"
                   value={newSection.grade}
                   onChange={e => setNewSection(p => ({ ...p, grade: parseInt(e.target.value) }))}
                   className="institutional-input px-3 py-2 text-sm border border-white/20 rounded bg-white/10 text-white w-24"
@@ -364,8 +366,9 @@ export default function ConfiguracionClient({ subjects: initialSubjects, gradeHo
                 </select>
               </div>
               <div>
-                <label className="block text-[11px] uppercase tracking-wider font-bold text-white/50 mb-1">Sección</label>
+                <label htmlFor="section-letter" className="block text-[11px] uppercase tracking-wider font-bold text-white/50 mb-1">Sección</label>
                 <input
+                  id="section-letter"
                   type="text"
                   maxLength={2}
                   value={newSection.section}
@@ -384,7 +387,7 @@ export default function ConfiguracionClient({ subjects: initialSubjects, gradeHo
               </button>
             </div>
             {sectionError && (
-              <p className="text-xs text-error mt-2 flex items-center gap-1">
+              <p role="alert" aria-live="polite" className="text-xs text-error mt-2 flex items-center gap-1">
                 <span className="material-symbols-outlined text-[14px]">warning</span>
                 {sectionError}
               </p>

@@ -24,7 +24,7 @@ function CancelZone({ isDragging }) {
   )
 }
 
-export default function SidebarTeachers({ teachers, isDragging }) {
+export default function SidebarTeachers({ teachers, isDragging, onTeacherSelect, selectedTeacherId }) {
   const [search, setSearch] = useState('')
   const [subjectFilter, setSubjectFilter] = useState('')
 
@@ -86,7 +86,7 @@ export default function SidebarTeachers({ teachers, isDragging }) {
         {filtered.length === 0 ? (
           <p className="text-xs text-white/50 text-center py-4">No hay profesores</p>
         ) : (
-          filtered.map(teacher => <TeacherCard key={teacher.id} teacher={teacher} />)
+          filtered.map(teacher => <TeacherCard key={teacher.id} teacher={teacher} onSelect={onTeacherSelect} isSelected={selectedTeacherId === teacher.id} />)
         )}
       </div>
 

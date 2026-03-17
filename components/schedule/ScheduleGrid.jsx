@@ -6,17 +6,17 @@ const DAYS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes']
 export default function ScheduleGrid({
   slots, assignments, section,
   isDragging, dragCellMap, overCellId,
-  onRemove,
+  onRemove, onCellClick, selectedTeacher, ariaLabel,
 }) {
   return (
-    <div id="schedule-grid-export" className="min-w-[800px] bg-white border border-border-std shadow-card rounded-sm text-xs">
+    <div id="schedule-grid-export" role="grid" aria-label={ariaLabel || 'Horario semanal'} className="min-w-[800px] bg-white border border-border-std shadow-card rounded-sm text-xs">
       {/* Header */}
-      <div className="grid grid-cols-[60px_1fr_1fr_1fr_1fr_1fr] divide-x divide-border-std border-b border-border-std bg-primary text-white sticky top-0 z-10">
-        <div className="p-2 flex items-center justify-center">
+      <div role="row" className="grid grid-cols-[60px_1fr_1fr_1fr_1fr_1fr] divide-x divide-border-std border-b border-border-std bg-primary text-white sticky top-0 z-10">
+        <div role="columnheader" aria-label="Hora" className="p-2 flex items-center justify-center">
           <span className="material-symbols-outlined text-white/70 text-sm">schedule</span>
         </div>
         {DAYS.map(day => (
-          <div key={day} className="p-2 text-center">
+          <div key={day} role="columnheader" scope="col" className="p-2 text-center">
             <h4 className="font-serif font-bold text-white text-xs tracking-wide">
               {day.toUpperCase()}
             </h4>
@@ -25,12 +25,12 @@ export default function ScheduleGrid({
       </div>
 
       {/* Grid body */}
-      <div className="grid grid-cols-[60px_1fr_1fr_1fr_1fr_1fr] divide-x divide-border-std text-xs">
+      <div role="presentation" className="grid grid-cols-[60px_1fr_1fr_1fr_1fr_1fr] divide-x divide-border-std text-xs">
         {slots.map(slot => {
           if (slot.is_special) {
             return (
-              <div key={slot.id} className="contents">
-                <div className="bg-primary/80 p-1 flex items-center justify-center font-tabular text-white/70 font-medium text-[10px] border-b border-white/10">
+              <div key={slot.id} role="row" className="contents">
+                <div role="rowheader" className="bg-primary/80 p-1 flex items-center justify-center font-tabular text-white/70 font-medium text-[10px] border-b border-white/10">
                   {slot.start_time}<br />{slot.end_time}
                 </div>
                 <div className="col-span-5 bg-slate-100 border-b border-slate-200 flex items-center justify-center py-1 h-6">
@@ -43,8 +43,8 @@ export default function ScheduleGrid({
           }
 
           return (
-            <div key={slot.id} className="contents">
-              <div className="bg-primary/80 p-1 flex items-center justify-center font-tabular text-white/70 font-medium text-[10px] border-b border-white/10">
+            <div key={slot.id} role="row" className="contents">
+              <div role="rowheader" className="bg-primary/80 p-1 flex items-center justify-center font-tabular text-white/70 font-medium text-[10px] border-b border-white/10">
                 {slot.start_time}<br />{slot.end_time}
               </div>
 
@@ -66,6 +66,7 @@ export default function ScheduleGrid({
                     dragState={dragState}
                     isOver={overCellId === cellId}
                     onRemove={onRemove}
+                    onCellClick={onCellClick ? () => onCellClick({ slotId: slot.id, day }) : undefined}
                   />
                 )
               })}

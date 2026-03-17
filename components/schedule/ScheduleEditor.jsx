@@ -45,6 +45,39 @@ export default function ScheduleEditor({
   const [dragCellMap, setDragCellMap] = useState({})  // all cells pre-computed on drag start
   const [toast, setToast] = useState(null)
   const [pendingDrop, setPendingDrop] = useState(null)
+  const [selectedTeacher, setSelectedTeacher] = useState(null)
+
+  const handleTeacherClick = (teacher) => {
+    setSelectedTeacher(prev => prev?.id === teacher.id ? null : teacher)
+  }
+
+  const clickCellMap = selectedTeacher ? buildDragCellMap(selectedTeacher, slots, assignments, section) : {}
+
+  const handleCellClick = ({ slotId, day }) => {
+    if (!selectedTeacher || !section) return
+    const cellId = `cell-${slotId}-${day}`
+    if (clickCellMap[cellId]?.blocked) {
+      showToast(
+        clickCellMap[cellId].teacherBusy
+          ? 'Profesor ocupado en otra sección a esa hora'
+          : 'Sección ya tiene clase en ese bloque',
+        true
+      )
+      return
+    }
+    const teacherSubjects = selectedTeacher.subjects || []
+    if (teacherSubjects.length === 0) {
+      showToast('Este profesor no tiene materias asignadas', true)
+      return
+    }
+    if (teacherSubjects.length === 1) {
+      doAssign(selectedTeacher, teacherSubjects[0], slotId, day)
+      setSelectedTeacher(null)
+      return
+    }
+    setPendingDrop({ teacher: selectedTeacher, slotId, day })
+    setSelectedTeacher(null)
+  }
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
@@ -140,7 +173,7 @@ export default function ScheduleEditor({
       onDragCancel={handleDragCancel}
     >
       <div className="flex flex-1 overflow-hidden">
-        <SidebarTeachers teachers={teachers} isDragging={!!activeTeacher} />
+        <SidebarTeachers teachers={teachers} isDragging={!!activeTeacher} onTeacherSelect={handleTeacherClick} selectedTeacherId={selectedTeacher?.id} />
 
         <section className="flex-1 overflow-auto bg-background p-3">
           <ScheduleGrid
@@ -151,6 +184,8 @@ export default function ScheduleEditor({
             dragCellMap={dragCellMap}
             overCellId={overCellId}
             onRemove={onRemove}
+            onCellClick={handleCellClick}
+            selectedTeacher={selectedTeacher}
           />
         </section>
       </div>
@@ -191,7 +226,10 @@ export default function ScheduleEditor({
       )}
 
       {toast && (
-        <div className={`fixed bottom-6 right-6 flex items-center gap-3 px-4 py-3 rounded shadow-floating z-50 toast-enter ${
+        <div
+          role={toast.isError ? 'alert' : 'status'}
+          aria-live={toast.isError ? 'assertive' : 'polite'}
+          className={`fixed bottom-6 right-6 flex items-center gap-3 px-4 py-3 rounded shadow-floating z-50 toast-enter ${
           toast.isError ? 'bg-error text-white' : 'bg-primary text-white'
         }`}>
           <span className="material-symbols-outlined text-secondary">
