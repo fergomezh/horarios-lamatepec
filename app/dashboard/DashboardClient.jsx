@@ -58,7 +58,7 @@ export default function DashboardClient({ teachers, assignments, sections, subje
             <span className="text-sm font-medium text-white">Ciclo 2026-2027</span>
           </div>
           <Link
-            href="/horarios"
+            href="/horarios-secundaria"
             className="flex items-center gap-2 bg-secondary hover:bg-secondary-light text-primary font-medium text-sm px-4 py-1.5 rounded shadow-card transition-colors"
           >
             <span className="material-symbols-outlined text-[18px]">add</span>
@@ -207,7 +207,7 @@ export default function DashboardClient({ teachers, assignments, sections, subje
                     </td>
                     <td className="px-6 py-3">
                       <Link
-                        href={`/horarios?grade=${sec.grade}&section=${sec.section}`}
+                        href={`/horarios-secundaria?grade=${sec.grade}&section=${sec.section}`}
                         className="text-xs font-bold text-secondary hover:text-white border border-secondary/30 px-2 py-1 rounded hover:border-secondary transition-colors"
                       >
                         Ver Horario
@@ -222,11 +222,12 @@ export default function DashboardClient({ teachers, assignments, sections, subje
       </div>
 
       {/* Quick Links */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {[
           { href: '/profesores', title: 'Directorio Docente', desc: 'Gestionar perfiles y disponibilidad', icon: 'person_search' },
           { href: '/configuracion', title: 'Configuración Académica', desc: 'Ajustar bloques y restricciones', icon: 'settings' },
-          { href: '/horarios', title: 'Editor de Horarios', desc: 'Crear y editar horarios seccionales', icon: 'calendar_month' },
+          { href: '/horarios-secundaria', title: 'Horarios Secundaria', desc: 'Crear y editar horarios de secundaria', icon: 'calendar_month' },
+          { href: '/horarios-primaria', title: 'Horarios Primaria', desc: 'Crear y editar horarios de primaria', icon: 'school' },
         ].map(link => (
           <Link
             key={link.href}

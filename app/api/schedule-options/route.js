@@ -1,12 +1,21 @@
 import { NextResponse } from 'next/server'
 import { query } from '@/lib/db'
 
-// GET /api/schedule-options — list all schedule options
-export async function GET() {
+// GET /api/schedule-options?level=primaria — list schedule options, optionally filtered by level
+export async function GET(request) {
   try {
-    const result = await query(
-      'SELECT * FROM schedule_options ORDER BY sort_order, id'
-    )
+    const { searchParams } = new URL(request.url)
+    const level = searchParams.get('level')
+
+    let sql = 'SELECT * FROM schedule_options'
+    const values = []
+    if (level) {
+      sql += ` WHERE COALESCE(level, 'secundaria') = $1`
+      values.push(level)
+    }
+    sql += ' ORDER BY sort_order, id'
+
+    const result = await query(sql, values)
     return NextResponse.json(result.rows)
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
@@ -16,15 +25,15 @@ export async function GET() {
 // POST /api/schedule-options — create a new schedule option
 export async function POST(request) {
   try {
-    const { label, sort_order } = await request.json()
+    const { label, sort_order, level } = await request.json()
     if (!label) {
       return NextResponse.json({ error: 'label es requerido' }, { status: 400 })
     }
 
     const result = await query(
-      `INSERT INTO schedule_options (label, is_principal, sort_order)
-       VALUES ($1, false, $2) RETURNING *`,
-      [label, sort_order ?? 99]
+      `INSERT INTO schedule_options (label, is_principal, sort_order, level)
+       VALUES ($1, false, $2, $3) RETURNING *`,
+      [label, sort_order ?? 99, level ?? 'secundaria']
     )
     return NextResponse.json(result.rows[0], { status: 201 })
   } catch (error) {

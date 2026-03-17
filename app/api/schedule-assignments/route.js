@@ -80,7 +80,36 @@ export async function POST(request) {
       return NextResponse.json({ error: 'teacher_id y subject_id son requeridos' }, { status: 400 })
     }
 
-    // Only check conflicts within the same option
+    // Get slot info for cross-level conflict check
+    const slotInfoRes = await query(
+      'SELECT start_time, end_time, COALESCE(level, \'secundaria\') as level FROM schedule_slots WHERE id = $1',
+      [slot_id]
+    )
+    const slotInfo = slotInfoRes.rows[0]
+
+    // Cross-level teacher conflict: same teacher at overlapping time in the other level
+    if (slotInfo) {
+      const crossConflict = await query(`
+        SELECT sa.id
+        FROM schedule_assignments sa
+        JOIN schedule_slots ss ON sa.slot_id = ss.id
+        WHERE sa.teacher_id = $1
+          AND sa.day = $2
+          AND COALESCE(ss.level, 'secundaria') != $3
+          AND ss.start_time::time < $4::time
+          AND ss.end_time::time > $5::time
+        LIMIT 1
+      `, [teacher_id, day, slotInfo.level, slotInfo.end_time, slotInfo.start_time])
+
+      if (crossConflict.rows.length > 0) {
+        return NextResponse.json({
+          error: 'Profesor ocupado en otro nivel a esta hora',
+          conflict: { teacherBusy: true, crossLevel: true, hasConflict: true },
+        }, { status: 409 })
+      }
+    }
+
+    // Only check same-level conflicts within the same option
     const allAssignments = await query(`
       SELECT sa.*, s.weekly_hours
       FROM schedule_assignments sa

@@ -4,7 +4,8 @@ import { usePathname } from 'next/navigation'
 
 const navLinks = [
   { href: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
-  { href: '/horarios', label: 'Horarios', icon: 'calendar_month' },
+  { href: '/horarios-secundaria', label: 'Secundaria', icon: 'calendar_month' },
+  { href: '/horarios-primaria', label: 'Primaria', icon: 'school' },
   { href: '/profesores', label: 'Directorio', icon: 'person_search' },
   { href: '/reportes', label: 'Reportes', icon: 'bar_chart' },
   { href: '/configuracion', label: 'Configuración', icon: 'settings' },

@@ -63,12 +63,14 @@ export default function ConfiguracionClient({ subjects: initialSubjects, gradeHo
       const saved = await res.json()
       setSections(prev => [...prev, saved].sort((a, b) => a.grade - b.grade || a.section.localeCompare(b.section)))
       // If new grade, seed gradeHoursMap for all subjects
+      // Primaria grades (1-6) start at 0 to match server-side seeding
       const gradeExists = sections.some(s => s.grade === saved.grade)
       if (!gradeExists) {
         const newMap = { ...gradeHoursMap }
+        const defaultHours = saved.grade <= 6 ? 0 : null
         subjects.forEach(sub => {
           const key = `${sub.id}-${saved.grade}`
-          if (newMap[key] === undefined) newMap[key] = sub.weekly_hours
+          if (newMap[key] === undefined) newMap[key] = defaultHours ?? sub.weekly_hours
         })
         setGradeHoursMap(newMap)
       }
@@ -356,7 +358,7 @@ export default function ConfiguracionClient({ subjects: initialSubjects, gradeHo
                   onChange={e => setNewSection(p => ({ ...p, grade: parseInt(e.target.value) }))}
                   className="institutional-input px-3 py-2 text-sm border border-white/20 rounded bg-white/10 text-white w-24"
                 >
-                  {[7, 8, 9, 10, 11, 12].map(g => (
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(g => (
                     <option key={g} value={g} className="text-primary">{g}°</option>
                   ))}
                 </select>

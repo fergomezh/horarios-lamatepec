@@ -6,6 +6,11 @@ export const dynamic = 'force-dynamic'
 async function runMigrations() {
   try {
     const { query } = await import('@/lib/db')
+
+    // Add level column to schedule_slots and schedule_options (for primaria/secundaria split)
+    await query(`ALTER TABLE schedule_slots ADD COLUMN IF NOT EXISTS level VARCHAR(20) DEFAULT 'secundaria'`)
+    await query(`ALTER TABLE schedule_options ADD COLUMN IF NOT EXISTS level VARCHAR(20) DEFAULT 'secundaria'`)
+
     // Ensure UNIQUE constraint includes option_id so different schedule options
     // can assign the same section+slot+day independently.
     await query(`
@@ -69,9 +74,9 @@ async function getData() {
         ORDER BY t.name
       `),
       query('SELECT * FROM subjects ORDER BY name'),
-      query('SELECT * FROM sections ORDER BY grade, section'),
-      query('SELECT * FROM schedule_slots ORDER BY period'),
-      query('SELECT * FROM schedule_options ORDER BY sort_order, id'),
+      query('SELECT * FROM sections WHERE grade > 6 ORDER BY grade, section'),
+      query("SELECT * FROM schedule_slots WHERE COALESCE(level, 'secundaria') = 'secundaria' ORDER BY period"),
+      query("SELECT * FROM schedule_options WHERE COALESCE(level, 'secundaria') = 'secundaria' ORDER BY sort_order, id"),
       query(`
         SELECT sa.*,
           t.name as teacher_name, t.color as teacher_color,
@@ -81,6 +86,7 @@ async function getData() {
         LEFT JOIN teachers t ON sa.teacher_id = t.id
         LEFT JOIN subjects s ON sa.subject_id = s.id
         JOIN schedule_slots ss ON sa.slot_id = ss.id
+        WHERE COALESCE(ss.level, 'secundaria') = 'secundaria'
         ORDER BY sa.option_id, ss.period, sa.day
       `),
       query('SELECT * FROM subject_grade_hours'),
@@ -112,7 +118,7 @@ async function getData() {
       gradeHours: gradeHoursRes.rows,
     }
   } catch {
-    return { teachers: [], subjects: [], sections: [], slots: [], scheduleOptions: [], error: true }
+    return { teachers: [], subjects: [], sections: [], slots: [], scheduleOptions: [], gradeHours: [], error: true }
   }
 }
 

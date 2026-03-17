@@ -22,12 +22,22 @@ export async function POST(request) {
       [grade, section.toUpperCase()]
     )
 
-    // If this grade is new, seed subject_grade_hours for all existing subjects
-    await query(`
-      INSERT INTO subject_grade_hours (subject_id, grade, weekly_hours)
-      SELECT id, $1, weekly_hours FROM subjects
-      ON CONFLICT DO NOTHING
-    `, [grade])
+    // Seed subject_grade_hours for all existing subjects.
+    // Primaria grades (1-6) start at 0 — user configures which subjects apply.
+    // Secundaria grades (7+) use each subject's default weekly_hours.
+    if (grade <= 6) {
+      await query(`
+        INSERT INTO subject_grade_hours (subject_id, grade, weekly_hours)
+        SELECT id, $1, 0 FROM subjects
+        ON CONFLICT DO NOTHING
+      `, [grade])
+    } else {
+      await query(`
+        INSERT INTO subject_grade_hours (subject_id, grade, weekly_hours)
+        SELECT id, $1, weekly_hours FROM subjects
+        ON CONFLICT DO NOTHING
+      `, [grade])
+    }
 
     return NextResponse.json(result.rows[0], { status: 201 })
   } catch (error) {
