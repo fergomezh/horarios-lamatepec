@@ -7,7 +7,7 @@ import SubjectProgress from '@/components/schedule/SubjectProgress'
 import SectionSelector from '@/components/schedule/SectionSelector'
 import ConfirmModal from '@/components/ui/ConfirmModal'
 
-export default function HorariosClient({ teachers, subjects, sections, slots, scheduleOptions: initialOptions, gradeHours = [], error, initialGrade, initialSection }) {
+export default function HorariosBachilleratoClient({ teachers, subjects, sections, slots, scheduleOptions: initialOptions, gradeHours = [], error, initialGrade, initialSection }) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [toast, setToast] = useState(null)
@@ -19,7 +19,7 @@ export default function HorariosClient({ teachers, subjects, sections, slots, sc
       const match = sortedSections.find(s => s.grade === initialGrade && s.section === initialSection)
       if (match) return key === 'grade' ? match.grade : match.section
     }
-    return key === 'grade' ? (sortedSections[0]?.grade ?? 7) : (sortedSections[0]?.section ?? 'A')
+    return key === 'grade' ? (sortedSections[0]?.grade ?? 10) : (sortedSections[0]?.section ?? 'A')
   }
 
   const [selectedGrade, setSelectedGrade] = useState(() => resolveInitial('grade'))
@@ -94,7 +94,7 @@ export default function HorariosClient({ teachers, subjects, sections, slots, sc
       const res = await fetch('/api/schedule-options', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ label: newLabel, sort_order: scheduleOptions.length }),
+        body: JSON.stringify({ label: newLabel, sort_order: scheduleOptions.length, level: 'bachillerato' }),
       })
       if (!res.ok) {
         const err = await res.json()

@@ -74,7 +74,7 @@ async function getData() {
         ORDER BY t.name
       `),
       query('SELECT * FROM subjects ORDER BY name'),
-      query('SELECT * FROM sections WHERE grade > 6 ORDER BY grade, section'),
+      query('SELECT * FROM sections WHERE grade > 6 AND grade <= 9 ORDER BY grade, section'),
       query("SELECT * FROM schedule_slots WHERE COALESCE(level, 'secundaria') = 'secundaria' ORDER BY period"),
       query("SELECT * FROM schedule_options WHERE COALESCE(level, 'secundaria') = 'secundaria' ORDER BY sort_order, id"),
       query(`

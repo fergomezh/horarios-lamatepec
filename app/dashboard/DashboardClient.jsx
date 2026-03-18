@@ -207,7 +207,7 @@ export default function DashboardClient({ teachers, assignments, sections, subje
                     </td>
                     <td className="px-6 py-3">
                       <Link
-                        href={`/horarios-secundaria?grade=${sec.grade}&section=${sec.section}`}
+                        href={`${sec.grade >= 10 ? '/horarios-bachillerato' : '/horarios-secundaria'}?grade=${sec.grade}&section=${sec.section}`}
                         className="text-xs font-bold text-secondary hover:text-white border border-secondary/30 px-2 py-1 rounded hover:border-secondary transition-colors"
                       >
                         Ver Horario
@@ -222,10 +222,11 @@ export default function DashboardClient({ teachers, assignments, sections, subje
       </div>
 
       {/* Quick Links */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
         {[
           { href: '/profesores', title: 'Directorio Docente', desc: 'Gestionar perfiles y disponibilidad', icon: 'person_search' },
           { href: '/configuracion', title: 'Configuración Académica', desc: 'Ajustar bloques y restricciones', icon: 'settings' },
+          { href: '/horarios-bachillerato', title: 'Horarios Bachillerato', desc: 'Crear y editar horarios de bachillerato', icon: 'school' },
           { href: '/horarios-secundaria', title: 'Horarios Secundaria', desc: 'Crear y editar horarios de secundaria', icon: 'calendar_month' },
           { href: '/horarios-primaria', title: 'Horarios Primaria', desc: 'Crear y editar horarios de primaria', icon: 'school' },
         ].map(link => (
