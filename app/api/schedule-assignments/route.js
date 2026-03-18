@@ -110,13 +110,19 @@ export async function POST(request) {
     }
 
     // Only check same-level conflicts within the same option
-    const allAssignments = await query(`
-      SELECT sa.*, s.weekly_hours
-      FROM schedule_assignments sa
-      LEFT JOIN subjects s ON sa.subject_id = s.id
-      WHERE sa.teacher_id IS NOT NULL AND sa.option_id = $1
-    `, [option_id])
-    const subjects = await query('SELECT * FROM subjects')
+    const [allAssignments, subjects, sectionRes, gradeHoursRes] = await Promise.all([
+      query(`
+        SELECT sa.*, s.weekly_hours
+        FROM schedule_assignments sa
+        LEFT JOIN subjects s ON sa.subject_id = s.id
+        WHERE sa.teacher_id IS NOT NULL AND sa.option_id = $1
+      `, [option_id]),
+      query('SELECT * FROM subjects'),
+      query('SELECT grade FROM sections WHERE id = $1', [section_id]),
+      query('SELECT * FROM subject_grade_hours'),
+    ])
+
+    const grade = sectionRes.rows[0]?.grade ?? null
 
     const conflict = checkConflicts(
       parseInt(teacher_id),
@@ -125,7 +131,9 @@ export async function POST(request) {
       parseInt(slot_id),
       day,
       allAssignments.rows,
-      subjects.rows
+      subjects.rows,
+      grade,
+      gradeHoursRes.rows
     )
 
     if (conflict.hasConflict) {
