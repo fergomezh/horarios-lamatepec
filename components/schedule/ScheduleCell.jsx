@@ -12,29 +12,27 @@ export default function ScheduleCell({ id, assignment, slotId, day, isDragging, 
         isDragging ? 'opacity-50' : ''
       }`}>
         <div
-          className="w-full h-full rounded p-1 flex flex-col justify-between bg-white shadow-card"
+          className="w-full h-full rounded p-1 flex flex-col justify-between bg-white shadow-card relative"
           style={{ border: `3px solid ${color}` }}
         >
-          <div className="flex justify-between items-start gap-0.5">
-            <span
-              className="text-xs font-extrabold uppercase tracking-wide leading-tight truncate"
-              title={assignment.subject_name}
+          <span
+            className="text-[9px] font-extrabold uppercase leading-tight line-clamp-3 pr-3"
+            title={assignment.subject_name}
+            style={{ color }}
+          >
+            {assignment.subject_name}
+          </span>
+          {!isDragging && (
+            <button
+              onClick={() => onRemove(assignment.id)}
+              aria-label={`Quitar ${assignment.subject_name}`}
+              className="absolute top-0.5 right-0.5 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity rounded hover:bg-gray-100"
               style={{ color }}
             >
-              {assignment.subject_name}
-            </span>
-            {!isDragging && (
-              <button
-                onClick={() => onRemove(assignment.id)}
-                aria-label={`Quitar ${assignment.subject_name}`}
-                className="opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity shrink-0 rounded hover:bg-gray-100"
-                style={{ color }}
-              >
-                <span className="material-symbols-outlined text-[10px]" aria-hidden="true">close</span>
-              </button>
-            )}
-          </div>
-          <p className="text-[11px] text-text-muted font-medium leading-tight truncate" title={assignment.teacher_name}>
+              <span className="material-symbols-outlined text-[10px]" aria-hidden="true">close</span>
+            </button>
+          )}
+          <p className="text-[10px] text-text-muted font-medium leading-tight truncate" title={assignment.teacher_name}>
             {assignment.teacher_name}
           </p>
         </div>
