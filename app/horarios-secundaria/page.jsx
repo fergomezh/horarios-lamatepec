@@ -60,7 +60,7 @@ async function getData() {
     const [teachersRes, subjectsRes, sectionsRes, slotsRes, optionsRes, assignmentsRes, gradeHoursRes] = await Promise.all([
       query(`
         SELECT t.*,
-          COALESCE(COUNT(DISTINCT sa.id), 0)::int as assigned_hours,
+          COUNT(DISTINCT CASE WHEN so.is_principal = true AND COALESCE(ss.level, 'secundaria') = 'secundaria' THEN sa.id END)::int as assigned_hours,
           COALESCE(
             JSON_AGG(DISTINCT JSONB_BUILD_OBJECT('id', s.id, 'name', s.name, 'color', s.color, 'weekly_hours', s.weekly_hours))
             FILTER (WHERE s.id IS NOT NULL),
@@ -70,6 +70,8 @@ async function getData() {
         LEFT JOIN teacher_subjects ts ON ts.teacher_id = t.id
         LEFT JOIN subjects s ON s.id = ts.subject_id
         LEFT JOIN schedule_assignments sa ON sa.teacher_id = t.id
+        LEFT JOIN schedule_options so ON so.id = sa.option_id
+        LEFT JOIN schedule_slots ss ON ss.id = sa.slot_id
         GROUP BY t.id
         ORDER BY t.name
       `),

@@ -38,6 +38,21 @@ async function runPrimariaMigrations(query) {
       END IF;
     END $$;
   `)
+
+  // Remove orphaned assignments: grade 1–6 sections assigned with non-primaria slots.
+  // These were created before the primaria module existed (using secundaria slots)
+  // and can't be displayed or edited from any schedule module.
+  await query(`
+    DELETE FROM schedule_assignments
+    WHERE id IN (
+      SELECT sa.id
+      FROM schedule_assignments sa
+      JOIN sections sec ON sec.id = sa.section_id
+      JOIN schedule_slots ss ON ss.id = sa.slot_id
+      WHERE sec.grade <= 6
+        AND COALESCE(ss.level, 'secundaria') != 'primaria'
+    )
+  `)
 }
 
 async function getData() {
@@ -48,7 +63,7 @@ async function getData() {
     const [teachersRes, subjectsRes, sectionsRes, slotsRes, optionsRes, assignmentsRes, gradeHoursRes] = await Promise.all([
       query(`
         SELECT t.*,
-          COALESCE(COUNT(DISTINCT sa.id), 0)::int as assigned_hours,
+          COUNT(DISTINCT CASE WHEN so.is_principal = true AND ss.level = 'primaria' THEN sa.id END)::int as assigned_hours,
           COALESCE(
             JSON_AGG(DISTINCT JSONB_BUILD_OBJECT('id', s.id, 'name', s.name, 'color', s.color, 'weekly_hours', s.weekly_hours))
             FILTER (WHERE s.id IS NOT NULL),
@@ -58,6 +73,8 @@ async function getData() {
         LEFT JOIN teacher_subjects ts ON ts.teacher_id = t.id
         LEFT JOIN subjects s ON s.id = ts.subject_id
         LEFT JOIN schedule_assignments sa ON sa.teacher_id = t.id
+        LEFT JOIN schedule_options so ON so.id = sa.option_id
+        LEFT JOIN schedule_slots ss ON ss.id = sa.slot_id
         GROUP BY t.id
         ORDER BY t.name
       `),
