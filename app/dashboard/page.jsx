@@ -5,9 +5,13 @@ export const dynamic = 'force-dynamic'
 
 async function purgeOrphanedAssignments(query) {
   try {
-    // Remove assignments that can never appear in any schedule module because
-    // the option level doesn't match the slot level, or the section grade
-    // doesn't belong to the option level.
+    // Ensure level columns exist before using them (same migration as horarios pages)
+    await query(`ALTER TABLE schedule_slots    ADD COLUMN IF NOT EXISTS level VARCHAR(20) DEFAULT 'secundaria'`)
+    await query(`ALTER TABLE schedule_options  ADD COLUMN IF NOT EXISTS level VARCHAR(20) DEFAULT 'secundaria'`)
+
+    // Remove assignments that can never appear in any schedule module:
+    // 1. Option level != slot level
+    // 2. Section grade out of range for the option level
     await query(`
       DELETE FROM schedule_assignments
       WHERE id IN (
@@ -25,7 +29,7 @@ async function purgeOrphanedAssignments(query) {
       )
     `)
   } catch {
-    // Non-fatal: table may not exist yet on first load
+    // Non-fatal: tables may not exist yet on very first load
   }
 }
 

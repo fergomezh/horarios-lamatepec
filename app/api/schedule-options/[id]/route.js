@@ -63,11 +63,15 @@ export async function PATCH(request, { params }) {
       await query('UPDATE schedule_options SET label = $1 WHERE id = $2', [body.label, id])
     }
 
-    // Set as principal: unset all others, set this one
+    // Set as principal: unset all others IN THE SAME LEVEL, set this one
     if (body.is_principal === true) {
+      const optLevel = existing.rows[0].level ?? 'secundaria'
       await query('BEGIN')
       try {
-        await query('UPDATE schedule_options SET is_principal = false')
+        await query(
+          `UPDATE schedule_options SET is_principal = false WHERE COALESCE(level, 'secundaria') = $1`,
+          [optLevel]
+        )
         await query('UPDATE schedule_options SET is_principal = true WHERE id = $1', [id])
         await query('COMMIT')
       } catch (err) {
