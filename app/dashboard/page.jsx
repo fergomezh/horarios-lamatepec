@@ -3,9 +3,36 @@ import DashboardClient from './DashboardClient'
 
 export const dynamic = 'force-dynamic'
 
+async function purgeOrphanedAssignments(query) {
+  try {
+    // Remove assignments that can never appear in any schedule module because
+    // the option level doesn't match the slot level, or the section grade
+    // doesn't belong to the option level.
+    await query(`
+      DELETE FROM schedule_assignments
+      WHERE id IN (
+        SELECT sa.id FROM schedule_assignments sa
+        JOIN schedule_options so ON so.id = sa.option_id
+        JOIN schedule_slots ss ON ss.id = sa.slot_id
+        WHERE COALESCE(so.level, 'secundaria') != COALESCE(ss.level, 'secundaria')
+        UNION
+        SELECT sa.id FROM schedule_assignments sa
+        JOIN schedule_options so ON so.id = sa.option_id
+        JOIN sections sec ON sec.id = sa.section_id
+        WHERE (COALESCE(so.level, 'secundaria') = 'bachillerato' AND sec.grade < 10)
+           OR (COALESCE(so.level, 'secundaria') = 'primaria'     AND sec.grade > 6)
+           OR (COALESCE(so.level, 'secundaria') = 'secundaria'   AND (sec.grade < 7 OR sec.grade > 9))
+      )
+    `)
+  } catch {
+    // Non-fatal: table may not exist yet on first load
+  }
+}
+
 async function getData() {
   try {
     const { query } = await import('@/lib/db')
+    await purgeOrphanedAssignments(query)
 
     const [teachersRes, assignmentsRes, sectionsRes, subjectsRes] = await Promise.all([
       query(`
