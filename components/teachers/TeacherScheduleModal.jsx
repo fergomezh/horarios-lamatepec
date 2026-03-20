@@ -27,8 +27,13 @@ export default function TeacherScheduleModal({ teacher, onClose }) {
     fetchSchedule()
   }, [teacher.id])
 
-  const slots = [...new Set(schedule.map(s => ({ id: s.slot_id, period: s.period, start_time: s.start_time, end_time: s.end_time })))]
-    .sort((a, b) => a.period - b.period)
+  const slotMap = new Map()
+  schedule.forEach(s => {
+    if (!slotMap.has(s.slot_id)) {
+      slotMap.set(s.slot_id, { id: s.slot_id, period: s.period, start_time: s.start_time, end_time: s.end_time })
+    }
+  })
+  const slots = [...slotMap.values()].sort((a, b) => a.period - b.period)
 
   const getCellContent = (slotId, day) => {
     return schedule.filter(s => s.slot_id === slotId && s.day === day)
